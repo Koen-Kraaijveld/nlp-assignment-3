@@ -52,7 +52,7 @@ class PromptManager:
         try:
             return self.__make_prompt(prompt)
         except openai.APIError:
-            retries = 0
+            retries = 1
             print(f"f{retries}. Caught APIError exception. Restarting. Prompt = {prompt}")
             while retries <= max_retries:
                 try:
