@@ -44,5 +44,5 @@ class TextClassificationDataset:
         return str(self.data)
 
 
-dataset = TextClassificationDataset("../legacy/animal_classification_v1.csv", test_split=0.4, val_split=0., shuffle=True)
+# dataset = TextClassificationDataset("../legacy/animal_classification_v1.csv", test_split=0.4, val_split=0., shuffle=True)
 # print(dataset.data)
