@@ -1,7 +1,8 @@
 import os
 
+import pandas
+
 from data.PromptManager import PromptManager
-from data.Prompter import Prompter
 
 
 args = {
@@ -13,7 +14,16 @@ args = {
 
 def start_prompts():
     manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
-    manager.start_prompts(length=1)
+    manager.start_prompts(length=20)
 
 
 start_prompts()
+
+# response = ["1. abc", "2. 123", "3. def"]
+# print(pandas.Series(response))
+#
+# labels = ["airplane"] * len(response)
+# print(pandas.Series(labels))
+#
+# df = pandas.DataFrame({"description": response, "label": labels})
+# print(df)
