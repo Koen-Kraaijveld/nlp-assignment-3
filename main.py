@@ -19,7 +19,7 @@ def start_prompts():
 
 # start_prompts()
 
-print("asdf")
+# print("asdf")
 
 # response = ["1. abc", "2. 123", "3. def"]
 # print(pandas.Series(response))
