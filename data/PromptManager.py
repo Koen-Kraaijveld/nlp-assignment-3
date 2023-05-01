@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 import openai
 import pandas as pd
@@ -17,11 +18,11 @@ class PromptManager:
         categories = self.get_categories("./data/saved/categories.txt")
         for category in tqdm(categories, desc="Prompting"):
             prompt1 = self.prepare_prompt(category, length=length)
-            response1 = self.__clean_responses(self.make_prompt(prompt1).split("\n"))
+            response1 = self.__clean_responses(self.make_safe_prompt(prompt1).split("\n"))
             prompt2 = self.prepare_prompt(category, length=length, detail="short")
-            response2 = self.__clean_responses(self.make_prompt(prompt2).split("\n"))
+            response2 = self.__clean_responses(self.make_safe_prompt(prompt2).split("\n"))
             prompt3 = self.prepare_prompt(category, length=length, detail="long")
-            response3 = self.__clean_responses(self.make_prompt(prompt3).split("\n"))
+            response3 = self.__clean_responses(self.make_safe_prompt(prompt3).split("\n"))
 
             for row in [response1, response2, response3]:
                 row = pd.DataFrame({"description": row, "label": [category] * len(row)})
@@ -47,7 +48,20 @@ class PromptManager:
                 cleaned.append(responses[i])
         return cleaned
 
-    def make_prompt(self, prompt):
+    def make_safe_prompt(self, prompt, max_retries=10, timeout=10):
+        try:
+            return self.__make_prompt(prompt)
+        except openai.APIError:
+            retries = 0
+            print(f"f{retries}. Caught APIError exception. Restarting. Prompt = {prompt}")
+            while retries <= max_retries:
+                try:
+                    return self.__make_prompt(prompt)
+                except openai.APIError:
+                    time.sleep(timeout)
+                    retries += 1
+
+    def __make_prompt(self, prompt):
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
