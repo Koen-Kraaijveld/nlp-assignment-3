@@ -17,7 +17,9 @@ def start_prompts():
     manager.start_prompts(length=20)
 
 
-start_prompts()
+# start_prompts()
+
+print("asdf")
 
 # response = ["1. abc", "2. 123", "3. def"]
 # print(pandas.Series(response))
