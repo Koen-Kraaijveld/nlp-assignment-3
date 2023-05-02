@@ -13,14 +13,13 @@ x_test = tfidf_vec.transform(x_test)
 model = LogisticRegression().fit(x_train, y_train)
 score = model.score(x_test, y_test)
 
-
 print(score)
 
 
 def predict(prompt):
-    prompt = clean_text(pd.Series(prompt), remove_stopwords=False)
+    prompt = clean_text(pd.Series(prompt), remove_stopwords=True)
     prompt = tfidf_vec.transform(prompt)
     print(f"{model.predict(prompt)}, {model.predict_proba(prompt)}")
 
 
-predict(["This mammal is a rodent."])
+predict(["This aircraft is used for transportation to fly across different countries."])

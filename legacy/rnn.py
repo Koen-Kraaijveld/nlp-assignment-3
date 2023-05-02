@@ -8,7 +8,7 @@ from keras.layers import Embedding
 from data.Dataset import dataset
 
 
-vocab_size = dataset.vocab_size
+vocab_size = dataset.__vocab_size
 tokenizer = Tokenizer(num_words=vocab_size)
 
 print(len(dataset.data))

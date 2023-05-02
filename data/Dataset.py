@@ -10,7 +10,7 @@ class TextClassificationDataset:
         if shuffle:
             self.data = self.data.sample(frac=1).reset_index(drop=True)
         self.data["description"] = self.__clean_text(self.data["description"])
-        self.data["animal"] = LabelEncoder().fit_transform(self.data["animal"])
+        self.data["label"] = LabelEncoder().fit_transform(self.data["label"])
         self.train = self.data[:int(len(self.data) * (1 - test_split))]
         self.test = self.data[len(self.train):]
         if val_split > 0:
@@ -44,5 +44,3 @@ class TextClassificationDataset:
         return str(self.data)
 
 
-# dataset = TextClassificationDataset("../legacy/animal_classification_v1.csv", test_split=0.4, val_split=0., shuffle=True)
-# print(dataset.data)

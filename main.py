@@ -1,6 +1,8 @@
 import os
 
+from data.Dataset import TextClassificationDataset
 from data.PromptManager import PromptManager
+from models.LSTM import LSTM
 
 
 args = {
@@ -15,4 +17,7 @@ def start_prompts():
     manager.start_prompts(length=20)
 
 
-start_prompts()
+dataset = TextClassificationDataset("data/saved/raw_descriptions.csv", test_split=0.4, shuffle=True)
+
+model = LSTM(dataset, use_tfidf=True)
+model.train()

@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-df = pd.read_csv("animal_classification_v1.csv")
+df = pd.read_csv("../data/saved/raw_descriptions.csv")
 
 
 def clean_text(x, remove_stopwords=False):
@@ -34,7 +34,7 @@ def clean_text(x, remove_stopwords=False):
 
 
 x = df["description"]
-y = df["animal"]
+y = df["label"]
 x = clean_text(x, remove_stopwords=False)
 
 def split_data(test_split):
