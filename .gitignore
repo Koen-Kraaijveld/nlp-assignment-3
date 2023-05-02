@@ -1,5 +1,4 @@
 data/embeddings/glove.6B.100d.txt
-!data/embeddings/.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/**
