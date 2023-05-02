@@ -1,4 +1,5 @@
-data/embeddings/
+data/embeddings/*
+!data/embeddings/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/**
