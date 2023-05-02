@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from train_test_data import split_data, clean_text
 
 x_train, x_test, y_train, y_test = split_data(test_split=0.4)
-
+print(x_train)
 tfidf_vec = TfidfVectorizer()
 x_train = tfidf_vec.fit_transform(x_train)
 x_test = tfidf_vec.transform(x_test)

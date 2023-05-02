@@ -40,6 +40,14 @@ class TextClassificationDataset:
                     unique_words.append(word)
         return len(unique_words)
 
+    def get_all_words(self):
+        words = []
+        for row in self.data["description"]:
+            for word in row.split(" "):
+                if word != " " and word != "":
+                    words.append(word)
+        return words
+
     def __str__(self):
         return str(self.data)
 
