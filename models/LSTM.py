@@ -74,5 +74,3 @@ class LSTM(Model, ABC):
 # model.add(LSTMLayer(100, dropout=0.2, recurrent_dropout=0.2))
 # model.add(Dense(345, activation='softmax'))
 #
-# model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-# model.fit(transformed, self.__train["label"], batch_size=32, validation_split=0.4, epochs=20)
