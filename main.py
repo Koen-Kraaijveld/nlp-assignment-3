@@ -35,3 +35,29 @@ def start_prompts():
     manager.start_prompts()
 
 
+# start_prompts()
+
+# randomize_categories(save_file_path="./data/saved/categories_20.txt",
+#                      read_file_path="./data/saved/categories_100.txt",
+#                      num_elements=20)
+
+# manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
+# response = manager.make_safe_prompt(
+#     'Give me 20 very detailed and unique descriptions of an angel. Do not include the word '
+#     '"angel" or any of its variations in your response. Use very complex language in your '
+#     'response. Start all your responses with "This".')
+# print(response)
+
+# glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
+# dataset = TextClassificationDataset("data/saved/raw_descriptions.csv", test_split=0.4, shuffle=True)
+# model = LSTM(dataset, embedding=glove)
+# model.train()
+
+# manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
+# variables = [args["length"], args["detail"], args["complexity"], args["prefix"]]
+# variations = list(itertools.product(*variables))
+# for i in range(len(variations)):
+#     variation = variations[i]
+#     prompt = manager.prepare_prompt("airplane", length=variation[0], detail=variation[1],
+#                                     complexity=variation[2], prefix=variation[3])
+#     print(f"{i+1}) {prompt}")
