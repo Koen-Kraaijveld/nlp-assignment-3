@@ -8,6 +8,7 @@ x_train, x_test, y_train, y_test = split_data(test_split=0.4)
 print(x_train)
 tfidf_vec = TfidfVectorizer()
 x_train = tfidf_vec.fit_transform(x_train)
+print(x_train)
 x_test = tfidf_vec.transform(x_test)
 
 model = LogisticRegression().fit(x_train, y_train)
