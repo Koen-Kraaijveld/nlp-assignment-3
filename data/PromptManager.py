@@ -1,3 +1,4 @@
+import itertools
 import os
 import re
 import time
@@ -13,23 +14,29 @@ class PromptManager:
         openai.key = api_key
         self.args = args
 
-    def start_prompts(self, length=20):
+    def start_prompts(self):
         df = pd.DataFrame({"description": [], "label": []})
-        categories = self.get_categories("./data/saved/categories.txt")
-        for category in tqdm(categories, desc="Prompting"):
-            prompt1 = self.prepare_prompt(category, length=length)
-            response1 = self.__clean_responses(self.make_safe_prompt(prompt1).split("\n"))
-            prompt2 = self.prepare_prompt(category, length=length, detail="short")
-            response2 = self.__clean_responses(self.make_safe_prompt(prompt2).split("\n"))
-            prompt3 = self.prepare_prompt(category, length=length, detail="long")
-            response3 = self.__clean_responses(self.make_safe_prompt(prompt3).split("\n"))
+        categories = self.get_categories(self.args["categories_file"])
+        for category in categories:
+            responses = []
+            variables = [self.args["length"], self.args["detail"], self.args["complexity"], self.args["prefix"]]
+            variations = list(itertools.product(*variables))
+            for i in tqdm(range(len(variations)), desc=f"Prompting ({category})"):
+                variation = variations[i]
+                prompt = self.prepare_prompt(category, length=variation[0], detail=variation[1],
+                                             complexity=variation[2], prefix=variation[3])
+                print(f"\n{prompt}")
+                response = self.make_safe_prompt(prompt)
+                response = self.__clean_responses(response.split("\n"))
+                print(f"\n{response}")
+                responses.append(response)
 
-            for row in [response1, response2, response3]:
+            for row in responses:
                 row = pd.DataFrame({"description": row, "label": [category] * len(row)})
                 df = pd.concat([df, row], ignore_index=True)
-            df.to_csv("./data/saved/descriptions.csv", index=False)
+            df.to_csv("./data/recent/descriptions.csv", index=False)
 
-    def prepare_prompt(self, entity, length=1, detail=None):
+    def prepare_prompt(self, entity, length=1, detail=None, complexity=None, prefix=None):
         template = self.args["prompt_template"]
         article = "an" if entity[0] in ["a", "e", "i", "o", "u"] else "a"
         detail = "very short and " if detail == "short" else "very detailed and " if detail == "long" else ""
@@ -37,24 +44,26 @@ class PromptManager:
         template = re.sub(f"<var2>", detail, template)
         template = re.sub(f"<var3>", f"{article} {entity}", template)
         template = re.sub(f"<var4>", f"{entity}", template)
+        template = re.sub(f"<var5>", complexity, template)
+        template = re.sub(f"<var6>", prefix.capitalize(), template)
         return template
 
     def __clean_responses(self, responses):
         cleaned = []
         for i in range(len(responses)):
             if responses[i] != "":
-                responses[i] = responses[i].split(" ")[1:]
-                responses[i] = " ".join(responses[i])
+                # responses[i] = responses[i].split(" ")
+                # responses[i] = " ".join(responses[i])
                 cleaned.append(responses[i])
         return cleaned
 
-    def make_safe_prompt(self, prompt, max_retries=10, timeout=10):
+    def make_safe_prompt(self, prompt, max_retries=30, timeout=20):
         try:
             return self.__make_prompt(prompt)
-        except openai.APIError:
+        except (openai.error.APIError, openai.error.RateLimitError):
             retries = 1
-            print(f"f{retries}. Caught APIError exception. Restarting. Prompt = {prompt}")
             while retries <= max_retries:
+                print(f"f{retries}. Error. Restarting. Prompt = {prompt}")
                 try:
                     return self.__make_prompt(prompt)
                 except openai.APIError:
