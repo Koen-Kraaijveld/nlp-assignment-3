@@ -3,7 +3,7 @@ import os
 from data.Dataset import TextClassificationDataset
 from data.PromptManager import PromptManager
 from models.LSTM import LSTM
-from legacy.word2vec import start
+# from legacy.word2vec import start
 from data.GloVeEmbedding import GloVeEmbedding
 
 
@@ -21,5 +21,6 @@ def start_prompts():
 
 glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
 dataset = TextClassificationDataset("data/saved/raw_descriptions.csv", test_split=0.4, shuffle=True)
+# print(dataset.data)
 model = LSTM(dataset, embedding=glove)
 model.train()

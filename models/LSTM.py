@@ -7,7 +7,7 @@ from keras.callbacks import EarlyStopping
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, TextVectorization
+from tensorflow.keras.layers import Dense, TextVectorization, Bidirectional
 from tensorflow.keras.layers import LSTM as LSTMLayer
 from tensorflow.keras import Input
 from keras.layers import Embedding, GlobalMaxPooling1D
@@ -36,16 +36,17 @@ class LSTM(Model, ABC):
 
         model = Sequential()
         model.add(Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=100, trainable=False))
-        model.add(LSTMLayer(128, return_sequences=True, dropout=0.3))
-        model.add(GlobalMaxPooling1D())
+        model.add(Bidirectional(LSTMLayer(128, dropout=0.7, recurrent_regularizer='l2')))
+        # model.add(Bidirectional(LSTMLayer(128, dropout=0.5, recurrent_regularizer='l2')))
+        # model.add(GlobalMaxPooling1D())
         model.add(Dense(64, activation='relu'))
         model.add(Dense(345, activation='softmax'))
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=["acc"])
         print(model.summary())
 
-        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
+        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=30)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
-                  validation_split=0.2, epochs=5, verbose=1, callbacks=[es])
+                  validation_split=0.2, epochs=500, verbose=1, callbacks=[es])
 
     def evaluate(self, dataset):
         pass

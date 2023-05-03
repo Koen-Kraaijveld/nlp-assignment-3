@@ -1,15 +1,17 @@
 import re
 
+import nltk
+from nltk.corpus import stopwords
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 
 class TextClassificationDataset:
-    def __init__(self, csv_path, test_split, val_split=0., shuffle=False):
+    def __init__(self, csv_path, test_split, val_split=0., shuffle=False, remove_stopwords=False):
         self.data = pd.read_csv(csv_path)
         if shuffle:
             self.data = self.data.sample(frac=1).reset_index(drop=True)
-        self.data["description"] = self.__clean_text(self.data["description"])
+        self.data["description"] = self.__clean_text(self.data["description"], remove_stopwords=remove_stopwords)
         self.data["label"] = LabelEncoder().fit_transform(self.data["label"])
         self.train = self.data[:int(len(self.data) * (1 - test_split))]
         self.test = self.data[len(self.train):]
@@ -19,7 +21,7 @@ class TextClassificationDataset:
             self.val = temp[len(self.train):]
         self.vocab_size = self.__count_vocab_size()
 
-    def __clean_text(self, text):
+    def __clean_text(self, text, remove_stopwords=False):
         clean_text = []
         for sentence in text:
             sentence = sentence.lower()
@@ -29,6 +31,13 @@ class TextClassificationDataset:
             sentence = re.sub(r'[_"\-;%()|+&=*%.,!?:#$@\[\]/]', ' ', sentence)
             sentence = re.sub(r'<br />', ' ', sentence)
             sentence = re.sub(r'\'', ' ', sentence)
+
+            if remove_stopwords:
+                sentence = sentence.split()
+                stops = set(stopwords.words("english"))
+                sentence = [w for w in sentence if not w in stops]
+                sentence = " ".join(sentence)
+
             clean_text.append(sentence)
         return pd.Series(clean_text)
 
