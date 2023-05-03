@@ -25,10 +25,10 @@ class PromptManager:
                 variation = variations[i]
                 prompt = self.prepare_prompt(category, length=variation[0], detail=variation[1],
                                              complexity=variation[2], prefix=variation[3])
-                print(f"\n{prompt}")
+                # print(f"\n{prompt}")
                 response = self.make_safe_prompt(prompt)
                 response = self.__clean_responses(response.split("\n"))
-                print(f"\n{response}")
+                # print(f"\n{response}")
                 responses.append(response)
 
             for row in responses:

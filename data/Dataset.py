@@ -31,6 +31,8 @@ class TextClassificationDataset:
             sentence = re.sub(r'[_"\-;%()|+&=*%.,!?:#$@\[\]/]', ' ', sentence)
             sentence = re.sub(r'<br />', ' ', sentence)
             sentence = re.sub(r'\'', ' ', sentence)
+            sentence = re.sub(r'^(\d{1,2})(.|\)) ', '', sentence)
+            sentence = re.sub(r'  ', ' ', sentence)
 
             if remove_stopwords:
                 sentence = sentence.split()

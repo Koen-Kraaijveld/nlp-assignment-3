@@ -12,7 +12,7 @@ args = {
     "prompt_template": 'Give me <var1> <var2>unique descriptions of <var3>. Do not include the word '
                        '"<var4>" or any of its variations in your response. Use <var5> language in your response. '
                        'Start all your responses with "<var6>".',
-    "length": [2],
+    "length": [20],
     "detail": ["short", "", "long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
     "prefix": ["it", "this", "a", "the"],
@@ -49,7 +49,7 @@ def start_prompts():
 # print(response)
 
 # glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
-# dataset = TextClassificationDataset("data/saved/raw_descriptions.csv", test_split=0.4, shuffle=True)
+# dataset = TextClassificationDataset("data/saved/raw_descriptions_16.csv", test_split=0.4, shuffle=True)
 # model = LSTM(dataset, embedding=glove)
 # model.train()
 
