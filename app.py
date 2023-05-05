@@ -29,9 +29,13 @@ label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 @app.route("/", methods=["POST"])
 def index():
     input_json = request.get_json(force=True)
+    print(input_json)
     text = [clean_text(input_json["text"])]
+    print(text)
     text = tokenizer.texts_to_sequences(text)
+    print(text)
     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
+    print(text)
     pred_label = model.predict(text)
     pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     pred_label_prob = pred_label.max(axis=-1)
