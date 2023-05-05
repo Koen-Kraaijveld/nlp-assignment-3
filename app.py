@@ -31,18 +31,18 @@ def index():
     print("someone sent a post to /predict")
     input_json = request.get_json(force=True)
     print(input_json)
-    text = [clean_text(input_json["text"])]
-    print(text)
-    text = tokenizer.texts_to_sequences(text)
-    print(text)
-    text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
-    print(text)
-    pred_label = model.predict(text)
-    pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
-    pred_label_prob = pred_label.max(axis=-1)
-    response = {"label": pred_label_dec.tolist(),
-                "prob": pred_label_prob.tolist()}
-    return jsonify(response)
+    # text = [clean_text(input_json["text"])]
+    # print(text)
+    # text = tokenizer.texts_to_sequences(text)
+    # print(text)
+    # text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
+    # print(text)
+    # pred_label = model.predict(text)
+    # pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
+    # pred_label_prob = pred_label.max(axis=-1)
+    # response = {"label": pred_label_dec.tolist(),
+    #             "prob": pred_label_prob.tolist()}
+    return "nothing here"
 
 
 @app.route("/test", methods=["POST"])
