@@ -40,6 +40,11 @@ def index():
     return jsonify(response)
 
 
+@app.route("/test", methods=["POST"])
+def hello_world():
+    return jsonify({"hello": "world"})
+
+
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
