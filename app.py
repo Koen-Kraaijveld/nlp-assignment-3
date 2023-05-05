@@ -33,8 +33,8 @@ def index():
     print(input_json)
     text = [clean_text(input_json["text"])]
     print(text)
-    # text = tokenizer.texts_to_sequences(text)
-    # print(text)
+    text = tokenizer.texts_to_sequences(text)
+    print(text)
     # text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
     # print(text)
     # pred_label = model.predict(text)
