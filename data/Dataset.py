@@ -3,16 +3,19 @@ import re
 import nltk
 from nltk.corpus import stopwords
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
 
 class TextClassificationDataset:
     def __init__(self, csv_path, test_split, val_split=0., shuffle=False, remove_stopwords=False):
         self.data = pd.read_csv(csv_path)
+        self.data["description"] = self.clean_text(self.data["description"], remove_stopwords=remove_stopwords)
+        self.__label_encoder = LabelEncoder()
+        self.data["label"] = self.__label_encoder.fit_transform(self.data["label"])
         if shuffle:
             self.data = self.data.sample(frac=1).reset_index(drop=True)
-        self.data["description"] = self.__clean_text(self.data["description"], remove_stopwords=remove_stopwords)
-        self.data["label"] = LabelEncoder().fit_transform(self.data["label"])
+        # print(self.data)
         self.train = self.data[:int(len(self.data) * (1 - test_split))]
         self.test = self.data[len(self.train):]
         if val_split > 0:
@@ -20,8 +23,9 @@ class TextClassificationDataset:
             self.train = self.train[:int(len(self.train) * (1 - val_split))]
             self.val = temp[len(self.train):]
         self.vocab_size = self.__count_vocab_size()
+        np.save("./models/saved/labels.npy", self.__label_encoder.classes_)
 
-    def __clean_text(self, text, remove_stopwords=False):
+    def clean_text(self, text, remove_stopwords=False):
         clean_text = []
         for sentence in text:
             sentence = sentence.lower()
@@ -58,6 +62,9 @@ class TextClassificationDataset:
                 if word != " " and word != "":
                     words.append(word)
         return words
+
+    def decode_label(self, label):
+        return self.__label_encoder.inverse_transform(label)
 
     def __str__(self):
         return str(self.data)
