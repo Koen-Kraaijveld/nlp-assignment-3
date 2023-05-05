@@ -28,6 +28,7 @@ label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 
 @app.route("/", methods=["POST"])
 def index():
+    print("someone sent a post to /")
     input_json = request.get_json(force=True)
     print(input_json)
     text = [clean_text(input_json["text"])]
@@ -46,6 +47,7 @@ def index():
 
 @app.route("/test", methods=["POST"])
 def hello_world():
+    print("someone sent a post to /test")
     return jsonify({"hello": "world"})
 
 
