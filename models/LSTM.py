@@ -21,6 +21,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from data.GloVeEmbedding import GloVeEmbedding
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
+import tensorflowjs as tfjs
 
 tensorflow.keras.utils.set_random_seed(42)
 random.seed(42)
@@ -64,8 +65,9 @@ class LSTM:
 
         es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
-                  validation_split=0.2, epochs=1000, verbose=1, callbacks=[es])
+                  validation_split=0.2, epochs=5, verbose=1, callbacks=[es])
         model.save("./models/saved/lstm.h5", save_format="h5")
+        tfjs.converters.save_keras_model(model, "./models/saved/js")
         self.__model = model
 
     def predict(self, text):

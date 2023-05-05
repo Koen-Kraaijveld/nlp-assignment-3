@@ -39,10 +39,10 @@ def start_prompts():
 
 # start_prompts()
 
-# glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
+glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
 dataset = TextClassificationDataset("data/saved/raw_descriptions_16.csv", test_split=0.4, shuffle=True)
 model = LSTM(dataset, load_model_path="./models/saved/lstm.h5", save_tokenizer="./models/saved/tokenizer.json")
-# model.train(embedding=glove)
+model.train(embedding=glove)
 
 text = ["This fruit is round and red."]
 print(model.predict(text))
