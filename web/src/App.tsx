@@ -5,7 +5,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <button>
+      <button onClick={predict}>
         click
       </button>
       <header className="App-header">
@@ -26,23 +26,28 @@ function App() {
   );
 }
 
-fetch("https://nlp-assignment-3.onrender.com/predict", {
+function predict() {
+  console.log("Requesting...")
+  fetch("https://nlp-assignment-3.onrender.com/predict", {
     // mode: 'no-cors',
     method: "POST",
-    body: JSON.stringify({"text": "This fruit is red and round"}),
+    body: JSON.stringify({"text": "This mammal hunts prey on the plains of Africa."}),
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       // 'Origin': 'http://localhost:3000'
     }
-})
-.then(response => 
-  response.json().then(data => ({
-      data: data,
-      status: response.status
-})))
-.then(res => {
-  console.log(res.status, res.data)
-})
+  })
+  .then(response => 
+    response.json().then(data => ({
+        data: data,
+        status: response.status
+  })))
+  .then(res => {
+    console.log(res.status, res.data)
+  })
+  console.log("Received response!")
+}
+
 
 export default App;
