@@ -29,17 +29,22 @@ def index():
         tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
     label_encoder = LabelEncoder()
     label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
-    print(time.time() - start_time)
+    print(f"Loading: {time.time() - start_time}")
 
     input_json = request.get_json(force=True)
     text = [clean_text(input_json["text"])]
     text = tokenizer.texts_to_sequences(text)
     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
+    print(f"Preprocessing: {time.time() - start_time}")
+
     pred_label = model.predict(text)
+    print(f"Predicting: {time.time() - start_time}")
+
     pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     pred_label_prob = pred_label.max(axis=-1)
     response = {"label": pred_label_dec.tolist(),
                 "prob": pred_label_prob.tolist()}
+    print(f"Response: {time.time() - start_time}")
     return jsonify(response)
 
 
