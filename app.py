@@ -4,6 +4,7 @@ import re
 import sys
 import time
 
+import flask
 import joblib
 import keras_preprocessing.text
 import numpy as np
@@ -45,24 +46,14 @@ def index():
 
     pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     pred_label_prob = pred_label.max(axis=-1)
-    response = {"label": pred_label_dec.tolist(),
+    response_body = {"label": pred_label_dec.tolist(),
                 "prob": pred_label_prob.tolist()}
     print(f"Response: {time.time() - start_time}")
-    return jsonify(response)
-
-
-@app.route("/test", methods=["POST"])
-def hello_world():
-    print("someone sent a post to /test")
-    return jsonify({"hello": "world"})
-
-
-@app.route("/testv2", methods=["POST"])
-def hello_world_2():
-    print("someone sent a post to /testv2")
-    input_json = request.get_json(force=True)
-    print(input_json)
-    return jsonify({"hello": "world"})
+    response = flask.Response(
+        response=response_body, status=200, mimetype="text/plain"
+    )
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 def clean_text(text):
