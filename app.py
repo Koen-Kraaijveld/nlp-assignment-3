@@ -18,16 +18,17 @@ np.random.seed(42)
 
 app = Flask(__name__)
 
-model = keras.models.load_model("./models/saved/lstm.h5")
-with open('./models/saved/tokenizer.json') as f:
-    data = json.load(f)
-    tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-label_encoder = LabelEncoder()
-label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 
 
 @app.route("/predict", methods=["POST"])
 def index():
+    model = keras.models.load_model("./models/saved/lstm.h5")
+    with open('./models/saved/tokenizer.json') as f:
+        data = json.load(f)
+        tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
+
     print("someone sent a post to /predict")
     input_json = request.get_json(force=True)
     print(input_json)
