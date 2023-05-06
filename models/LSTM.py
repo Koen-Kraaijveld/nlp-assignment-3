@@ -41,7 +41,7 @@ class LSTM(Model, ABC):
         model.add(GlobalMaxPooling1D())
         model.add(Dense(128, activation='relu'))
         model.add(Dense(128, activation='relu'))
-        model.add(Dense(16, activation='softmax'))
+        model.add(Dense(100, activation='softmax'))
 
         optimizer = Adam(learning_rate=0.001)
         model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=["acc"])

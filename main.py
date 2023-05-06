@@ -2,6 +2,8 @@ import itertools
 import os
 import random
 
+import pandas as pd
+
 from data.Dataset import TextClassificationDataset
 from data.PromptManager import PromptManager
 from models.LSTM import LSTM
@@ -30,28 +32,22 @@ def randomize_categories(save_file_path, read_file_path, num_elements=100):
             file.write(f"{category}\n")
 
 
+def concatenate_dataframes(df1, df2):
+    df = pd.concat([df1, df2], ignore_index=True)
+    df.to_csv("./data/saved/raw_descriptions_100.csv", index=False)
+
+
 def start_prompts():
     manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
     manager.start_prompts()
 
 
-start_prompts()
+# start_prompts()
 
-# randomize_categories(save_file_path="./data/saved/categories_20.txt",
-#                      read_file_path="./data/saved/categories_100.txt",
-#                      num_elements=20)
-
-# manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
-# response = manager.make_safe_prompt(
-#     'Give me 20 very detailed and unique descriptions of an angel. Do not include the word '
-#     '"angel" or any of its variations in your response. Use very complex language in your '
-#     'response. Start all your responses with "This".')
-# print(response)
-
-# glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
-# dataset = TextClassificationDataset("data/saved/raw_descriptions_16.csv", test_split=0.4, shuffle=True)
-# model = LSTM(dataset, embedding=glove)
-# model.train()
+glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
+dataset = TextClassificationDataset("data/saved/raw_descriptions_100.csv", test_split=0.4, shuffle=True)
+model = LSTM(dataset, embedding=glove)
+model.train()
 
 # manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
 # variables = [args["length"], args["detail"], args["complexity"], args["prefix"]]
