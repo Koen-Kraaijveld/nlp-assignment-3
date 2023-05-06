@@ -16,7 +16,7 @@ args = {
     "detail": ["short", "", "long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
     "prefix": ["it", "this", "a", "the"],
-    "categories_file": "./data/saved/categories_20.txt"
+    "categories_file": "./data/saved/categories_100.txt"
 }
 
 
@@ -35,7 +35,7 @@ def start_prompts():
     manager.start_prompts()
 
 
-# start_prompts()
+start_prompts()
 
 # randomize_categories(save_file_path="./data/saved/categories_20.txt",
 #                      read_file_path="./data/saved/categories_100.txt",
