@@ -31,7 +31,9 @@ fetch("https://nlp-assignment-3.onrender.com/predict", {
     method: "POST",
     body: JSON.stringify({"text": "This fruit is red and round"}),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Origin': 'http://localhost:3000'
     }
 })
 .then(function(res) { 

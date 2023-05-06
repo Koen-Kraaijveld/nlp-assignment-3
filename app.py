@@ -50,7 +50,7 @@ def index():
                      "prob": pred_label_prob.tolist()}
     print(f"Response: {time.time() - start_time}")
     response = flask.Response(response=json.dumps(response_body), status=200)
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Content-Type"] = "application/json"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
