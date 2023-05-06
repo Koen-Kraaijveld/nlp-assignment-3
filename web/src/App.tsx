@@ -33,7 +33,7 @@ fetch("https://nlp-assignment-3.onrender.com/predict", {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Origin': 'http://localhost:3000'
+      // 'Origin': 'http://localhost:3000'
     }
 })
 .then(function(res) { 
