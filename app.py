@@ -62,7 +62,7 @@ def index():
     # print(response.headers)
     # print(response.json)
     response = flask.jsonify({'some': 'data'})
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     return response
 
 
