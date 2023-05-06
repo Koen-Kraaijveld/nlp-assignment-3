@@ -37,8 +37,9 @@ def index():
     print(text)
     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
     print(text)
-    pred_label = model.predict(text)
-    print(pred_label)
+    print(model)
+    # pred_label = model.predict(text)
+    # print(pred_label)
     # pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     # pred_label_prob = pred_label.max(axis=-1)
     # response = {"label": pred_label_dec.tolist(),
