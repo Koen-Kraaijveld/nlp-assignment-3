@@ -41,11 +41,11 @@ def index():
     print(model)
     pred_label = model.predict(text)
     print(pred_label)
-    # pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
-    # pred_label_prob = pred_label.max(axis=-1)
-    # response = {"label": pred_label_dec.tolist(),
-    #             "prob": pred_label_prob.tolist()}
-    return "nothing here"
+    pred_label_dec    = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
+    pred_label_prob = pred_label.max(axis=-1)
+    response = {"label": pred_label_dec.tolist(),
+                "prob": pred_label_prob.tolist()}
+    return jsonify(response)
 
 
 @app.route("/test", methods=["POST"])
