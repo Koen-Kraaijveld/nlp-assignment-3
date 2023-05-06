@@ -24,12 +24,14 @@ app = Flask(__name__)
 def index():
     start_time = time.time()
     model = keras.models.load_model("./models/saved/lstm.h5")
+    print(f"Loading model: {time.time() - start_time}")
     with open('./models/saved/tokenizer.json') as f:
         data = json.load(f)
         tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+    print(f"Loading tokenizer: {time.time() - start_time}")
     label_encoder = LabelEncoder()
     label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
-    print(f"Loading: {time.time() - start_time}")
+    print(f"Loading label encoder: {time.time() - start_time}")
 
     input_json = request.get_json(force=True)
     text = [clean_text(input_json["text"])]
