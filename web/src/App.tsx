@@ -30,6 +30,7 @@ fetch("https://nlp-assignment-3.onrender.com/predict", {
     mode: 'no-cors',
     method: "POST",
     body: JSON.stringify({text: "This fruit is red and round"}),
+    headers: {'content-type': 'application/json'}
 })
 .then(function(res) { 
   console.log(res.clone().json()) 
