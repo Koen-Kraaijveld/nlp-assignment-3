@@ -50,9 +50,10 @@ def index():
                 "prob": pred_label_prob.tolist()}
     print(f"Response: {time.time() - start_time}")
     response = flask.Response(
-        response=response_body, status=200, mimetype="text/plain"
+        response=json.dumps(response_body), status=200, mimetype="text/plain"
     )
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
     return response
 
 
