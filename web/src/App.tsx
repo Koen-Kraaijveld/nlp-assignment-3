@@ -36,8 +36,13 @@ fetch("https://nlp-assignment-3.onrender.com/predict", {
       // 'Origin': 'http://localhost:3000'
     }
 })
-.then(function(res) { 
-  console.log(res.clone().json()) 
+.then(response => 
+  response.json().then(data => ({
+      data: data,
+      status: response.status
+})))
+.then(res => {
+  console.log(res.status, res.data)
 })
 
 export default App;
