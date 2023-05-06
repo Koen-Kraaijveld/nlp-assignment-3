@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import tensorflow
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 
@@ -19,9 +20,12 @@ random.seed(42)
 np.random.seed(42)
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route("/predict", methods=["POST"])
+@cross_origin()
 def index():
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
