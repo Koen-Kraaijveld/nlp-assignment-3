@@ -2,6 +2,7 @@ import json
 import random
 import re
 import sys
+import time
 
 import joblib
 import keras_preprocessing.text
@@ -17,29 +18,25 @@ random.seed(42)
 np.random.seed(42)
 
 app = Flask(__name__)
-model = keras.models.load_model("./models/saved/lstm.h5")
-with open('./models/saved/tokenizer.json') as f:
-    data = json.load(f)
-    tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-label_encoder = LabelEncoder()
-label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 
 
 @app.route("/predict", methods=["POST"])
 def index():
-    print("someone sent a post to /predict")
+    start_time = time.time()
+    model = keras.models.load_model("./models/saved/lstm.h5")
+    with open('./models/saved/tokenizer.json') as f:
+        data = json.load(f)
+        tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
+    print(time.time() - start_time)
+
     input_json = request.get_json(force=True)
-    print(input_json)
     text = [clean_text(input_json["text"])]
-    print(text)
     text = tokenizer.texts_to_sequences(text)
-    print(text)
     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
-    print(text)
-    print(model)
     pred_label = model.predict(text)
-    print(pred_label)
-    pred_label_dec    = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
+    pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     pred_label_prob = pred_label.max(axis=-1)
     response = {"label": pred_label_dec.tolist(),
                 "prob": pred_label_prob.tolist()}
@@ -50,6 +47,7 @@ def index():
 def hello_world():
     print("someone sent a post to /test")
     return jsonify({"hello": "world"})
+
 
 @app.route("/testv2", methods=["POST"])
 def hello_world_2():
