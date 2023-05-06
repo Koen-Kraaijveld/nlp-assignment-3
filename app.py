@@ -49,16 +49,24 @@ def index():
     response_body = {"label": pred_label_dec.tolist(),
                      "prob": pred_label_prob.tolist()}
     print(f"Response: {time.time() - start_time}")
-    response = flask.Response(response=json.dumps(response_body), status=200)
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Content-Type"] = "application/json"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Origin, Content-Type, Accept"
-    print(response.headers)
-    print(response.json)
+    # response = flask.Response(response=json.dumps(response_body), status=200)
+    # response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    # response.headers["Access-Control-Allow-Credentials"] = "true"
+    # response.headers["Content-Type"] = "application/json"
+    # response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    # response.headers["Access-Control-Allow-Headers"] = "Origin, Content-Type, Accept"
+    # print(response.headers)
+    # print(response.json)
+    response = flask.jsonify({'some': 'data'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+
+@app.route("/test", methods=["GET"])
+def hello_world():
+    response = flask.jsonify({'hello': 'world'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 def clean_text(text):
     text = text.lower()
