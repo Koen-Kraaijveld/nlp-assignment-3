@@ -23,6 +23,7 @@ app = Flask(__name__)
 @app.route("/predict", methods=["POST"])
 def index():
     start_time = time.time()
+    print(f"Start: {time.time() - start_time}")
     model = keras.models.load_model("./models/saved/lstm.h5")
     print(f"Loading model: {time.time() - start_time}")
     with open('./models/saved/tokenizer.json') as f:
