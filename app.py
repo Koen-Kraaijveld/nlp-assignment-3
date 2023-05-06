@@ -47,14 +47,15 @@ def index():
     pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
     pred_label_prob = pred_label.max(axis=-1)
     response_body = {"label": pred_label_dec.tolist(),
-                "prob": pred_label_prob.tolist()}
+                     "prob": pred_label_prob.tolist()}
     print(f"Response: {time.time() - start_time}")
-    response = flask.Response(response=json.dumps(response_body), status=200, mimetype="application/json")
+    response = flask.Response(response=json.dumps(response_body), status=200)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Content-Type"] = "application/json"
     response.headers["Access-Control-Allow-Methods"] = "POST"
-    print(response)
+    print(response.headers)
+    print(response.json)
     return response
 
 
