@@ -20,6 +20,7 @@ random.seed(42)
 np.random.seed(42)
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
@@ -52,7 +53,8 @@ def index():
     for i in range(len(pred_label)):
         label = label_encoder.inverse_transform([i]).tolist()[0]
         response_dict[label] = float(pred_label[i])
-
+    response_dict = dict(sorted(response_dict.items(), key=lambda item: item[1], reverse=True))
+    print(response_dict)
     print(f"Response: {time.time() - start_time}")
     response = flask.jsonify(response_dict)
     return response

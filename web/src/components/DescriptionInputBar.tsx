@@ -11,7 +11,8 @@ interface IState {
     isRequesting: boolean,
     currentCategory: string,
     possibleCategories: Array<string>,
-    score: number
+    score: number,
+    currentPrediction: object
 }
 
 class DescriptionInputBar extends React.Component<IProps, IState> {
@@ -22,7 +23,8 @@ class DescriptionInputBar extends React.Component<IProps, IState> {
             isRequesting: false,
             currentCategory: "",
             possibleCategories: ["apple", "angel", "jail"],
-            score: 0
+            score: 0,
+            currentPrediction: {}
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         
@@ -61,12 +63,17 @@ class DescriptionInputBar extends React.Component<IProps, IState> {
               status: response.status
         })))
         .then(res => {
-          console.log(res.status, res.data)
-          if (res.data.label == this.state.currentCategory) {
-            this.setState({score: this.state.score + 1})
-            this.setRandomCategory()
-          }
-          this.setState({isRequesting: false})
+            console.log(res.status, res.data)
+            const sortable = Object.fromEntries(
+                Object.entries(res.data).sort(([,a],[,b]) => a-b)
+            );
+        
+
+            if (res.data.label == this.state.currentCategory) {
+                this.setState({score: this.state.score + 1})
+                this.setRandomCategory()
+            }
+            this.setState({isRequesting: false})
         })
     }
     
