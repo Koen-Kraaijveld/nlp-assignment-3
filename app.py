@@ -45,15 +45,16 @@ def index():
     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
     print(f"Preprocessing: {time.time() - start_time}")
 
-    pred_label = model.predict(text)
+    pred_label = model.predict(text)[0]
     print(f"Predicting: {time.time() - start_time}")
 
-    pred_label_dec = label_encoder.inverse_transform([pred_label.argmax(axis=-1)])
-    pred_label_prob = pred_label.max(axis=-1)
-    response_body = {"label": pred_label_dec.tolist(),
-                     "prob": pred_label_prob.tolist()}
+    response_dict = {}
+    for i in range(len(pred_label)):
+        label = label_encoder.inverse_transform([i]).tolist()[0]
+        response_dict[label] = float(pred_label[i])
+
     print(f"Response: {time.time() - start_time}")
-    response = flask.jsonify(response_body)
+    response = flask.jsonify(response_dict)
     return response
 
 
