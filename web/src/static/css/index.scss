@@ -5,7 +5,8 @@
 @import "./base/base.scss";
 
 // LAYOUTS
-@import "./layouts/main";
+@import "./layouts/main.scss";
 
 // COMPONENTS
 @import "./components/description-input-bar.scss";
+@import "./components/probabilities-tracker.scss";
