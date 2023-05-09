@@ -1,9 +1,11 @@
 import React from 'react';
+import fs from 'fs'
 
 import { ImSpinner2 } from "react-icons/im"
 import { AiOutlineEnter } from "react-icons/ai"
 
 import ProbabilitiesTracker from './ProbabilitiesTracker';
+import categories from "../data/categories_100.json";
 
 interface IProps {
 }
@@ -26,7 +28,7 @@ class DescriptionInputBar extends React.Component<IProps, IState> {
             description: "",
             isRequesting: false,
             currentCategory: "",
-            possibleCategories: ["apple", "angel", "jail"],
+            possibleCategories: categories,
             score: 0,
             currentPrediction: {},
             isShowingPopup: false,
