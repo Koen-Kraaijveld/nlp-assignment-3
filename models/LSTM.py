@@ -51,16 +51,14 @@ class LSTM:
 
         model = Sequential()
         model.add(Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=100, trainable=False))
-        model.add(LSTMLayer(256, return_sequences=True))
+        model.add(LSTMLayer(128, return_sequences=True))
         model.add(GlobalMaxPooling1D())
-        model.add(Dense(512, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(512, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(512, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(512, activation='relu'))
-        model.add(Dropout(0.7))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.2))
         model.add(Dense(100, activation='softmax'))
 
         optimizer = Adam(learning_rate=0.001)
@@ -70,7 +68,7 @@ class LSTM:
         es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
                   validation_split=0.2, epochs=1000, verbose=1, callbacks=[es])
-        model.save("./models/saved/lstm.h5", save_format="h5")
+        model.save("./models/saved/lstm-small.h5", save_format="h5")
         self.__model = model
 
     def predict(self, text):
