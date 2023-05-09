@@ -15,5 +15,3 @@ dictToSend = {"text": "This is a red, round fruit."}
 res = requests.post('http://127.0.0.1:5000/predict', json=dictToSend)
 print('response from server:', res.text)
 end_time = time.time()
-
-print(end_time - start_time)

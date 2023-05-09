@@ -30,7 +30,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def index():
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
-    model = keras.models.load_model("./models/saved/lstm.h5")
+    model = keras.models.load_model("./models/saved/lstm-small.h5")
     print(f"Loading model: {time.time() - start_time}")
     with open('./models/saved/tokenizer.json') as f:
         data = json.load(f)
