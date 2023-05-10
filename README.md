@@ -7,7 +7,7 @@ probabilities associated with their answer in descending order.
 
 For more information, please check the [report](https://github.com/Koen-Kraaijveld/nlp-assignment-3/blob/main/report.pdf).
 
-## Tour
+## Directories
 * [app.py](https://github.com/Koen-Kraaijveld/nlp-assignment-3/blob/main/app.py)
   * File that contains the Flask API and the routes that may be accessed.
 * [./models](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/models)
