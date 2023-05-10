@@ -1,10 +1,16 @@
 import React from 'react';
 
+/**
+ * Interface that controls which properties are in the Main props.
+ * @param children All JSX elements that will be rendered in this component.
+ */
 type Props = {
-    // title: string,
     children?: React.ReactNode
 }
 
+/**
+ * Component that contains the current view of the app.
+ */
 const Main: React.FunctionComponent<Props> = ({ children } : Props) => {
     return (
         <div id="wrapper">

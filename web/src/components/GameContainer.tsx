@@ -1,5 +1,4 @@
 import React from 'react';
-import fs from 'fs'
 
 import { ImSpinner2 } from "react-icons/im"
 import { AiOutlineEnter } from "react-icons/ai"
@@ -10,6 +9,17 @@ import categories from "../data/categories_100.json";
 interface IProps {
 }
 
+/**
+ * Interface that controls which properties are in the GameContainer state.
+ * @param description String that contains the current text from the input bar.
+ * @param isRequesting Boolean that checks if the app is currently awaiting a response from a previously sent request to the API.
+ * @param currentCategory String that contains the current category (word) that the user must describe.
+ * @param possibleCategories Array of strings that contains the pool of possible categories (words) that may be randomly selected.
+ * @param score Integer that contains the current score for the player.
+ * @param currentPrediction Object that contains the response from the model API.
+ * @param isShowingPopup Boolean that determines if a popup is being shown the the user.
+ * @param popupText String that contains the information being shown the user during a popup.
+ */ 
 interface IState {
     description: string,
     isRequesting: boolean,
@@ -21,7 +31,14 @@ interface IState {
     popupText: string
 }
 
+/**
+ * Component that renders all the necessary functionality and UI related to the game portion of the web app.
+ */
 class GameContainer extends React.Component<IProps, IState> {
+    /**
+     * Constructor for the GameContainer component.
+     * @param props Object that contains the properties of the GameContainer component.
+     */
     constructor(props: IProps) {
         super(props);
         this.state = {
@@ -38,6 +55,9 @@ class GameContainer extends React.Component<IProps, IState> {
         
     }
 
+    /**
+     * Function that is called when the component sucessfully mounts.
+     */
     componentDidMount(): void {
         alert("Please note that the first request sent might take upwards of 2 minutes. Due to limited resources, the AI model used in this app is hosted on a free web service. Therefore, the API might take some time to respond. Apologies for the inconvenience.")
         this.setState({
@@ -45,12 +65,19 @@ class GameContainer extends React.Component<IProps, IState> {
         })
     }
 
+    /**
+     * Function that randomly selects a new category from the pool of available categories.
+     */
     setRandomCategory() {
         var categories = this.state.possibleCategories
         var randomCategory = categories[Math.floor(Math.random() * categories.length)]
         this.setState({currentCategory: randomCategory})
     }
 
+    /**
+     * Function that handles the user's submission to the API to be passed through to the model.
+     * @param e Event listener object.
+     */
     handleSubmit(e: any) {
         e.preventDefault()
         if (this.state.description.includes(this.state.currentCategory)) {
@@ -65,6 +92,10 @@ class GameContainer extends React.Component<IProps, IState> {
         }
     }
     
+    /**
+     * Function that handles sending the request to the model API with the raw text from the input bar as JSON.
+     * @param description The raw text to be sent with the request.
+     */
     predict(description: string) {
         this.setState({isRequesting: true})
         fetch("https://nlp-assignment-3.onrender.com/predict", {
@@ -105,6 +136,10 @@ class GameContainer extends React.Component<IProps, IState> {
         })
     }
     
+    /**
+     * Function that renders this component.
+     * @returns The JSX rendering of this component.
+     */
     render() {
         return (
             <div>
