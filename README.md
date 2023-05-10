@@ -7,4 +7,12 @@ probabilities associated with their answer in descending order.
 
 For more information, please check the [report](https://github.com/Koen-Kraaijveld/nlp-assignment-3/blob/main/report.pdf).
 
-## Directories
+## Tour
+* [app.py](https://github.com/Koen-Kraaijveld/nlp-assignment-3/blob/main/app.py)
+  * File that contains the Flask API and the routes that may be accessed.
+* [./models](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/models)
+  * Directory that contains the LSTM model class and all saved files that are relevant to loading the model.
+* [./data](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/data)
+  * Directory that contains all the functionality related to the data, including classes for data handling, word embeddings and data collection through ChatGPT prompting.
+* [./web](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/web)
+  * Directory that contains the React Typescript web app.
