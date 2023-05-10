@@ -15,4 +15,4 @@ For more information, please check the [report](https://github.com/Koen-Kraaijve
 * [./data](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/data)
   * Directory that contains all the functionality related to the data, including classes for data handling, word embeddings and data collection through ChatGPT prompting.
 * [./web](https://github.com/Koen-Kraaijveld/nlp-assignment-3/tree/main/web)
-  * Directory that contains the React Typescript web app.
+  * Directory that contains the frontend React Typescript web app.
