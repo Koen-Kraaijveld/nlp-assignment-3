@@ -1,19 +1,20 @@
 import json
 import random
 import re
-import sys
 import time
 
 import flask
-import joblib
 import keras_preprocessing.text
 import numpy as np
-import pandas as pd
 import tensorflow
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
+
+"""
+File where all the code related to the Flask server is handled.
+"""
 
 tensorflow.keras.utils.set_random_seed(42)
 random.seed(42)
@@ -28,6 +29,12 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/predict", methods=["POST"])
 @cross_origin()
 def index():
+    """
+    Creates a /predict route for the Flask API that handles the model predictions (in the form of POST requests).
+    It expects the raw input text to be sent with the request.
+    :return: Returns a response containing the predictions from the model based on the raw input text that was sent
+    with the request.
+    """
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
     model = keras.models.load_model("./models/saved/lstm-small.h5")
@@ -60,13 +67,12 @@ def index():
     return response
 
 
-@app.route("/test", methods=["GET"])
-def hello_world():
-    response = flask.jsonify({'hello': 'world'})
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
-
 def clean_text(text):
+    """
+    Miscellaneous function to handle text cleaning (it is not possible to import the Dataset class into this file).
+    :param text: The raw input text to be cleaned.
+    :return: Returns the cleaned text.
+    """
     text = text.lower()
     text = re.sub(r'https?:\/\/.*[\r\n]*', '', text, flags=re.MULTILINE)
     text = re.sub(r'\<a href', ' ', text)

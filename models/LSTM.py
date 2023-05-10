@@ -22,13 +22,23 @@ from data.GloVeEmbedding import GloVeEmbedding
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
+# Set the seed for reproducibility
 tensorflow.keras.utils.set_random_seed(42)
 random.seed(42)
 np.random.seed(42)
 
 class LSTM:
+    """
+    Class in which the LSTM model is implemented.
+    """
     def __init__(self, dataset, load_model_path=None, save_tokenizer=None):
-        # super().__init__(dataset)
+        """
+        Constructor for the LSTM class.
+        :param dataset: Dataset object that contains all the necessary, correctly formatted data.
+        :param load_model_path: String that contains the path to load a pretrained model.
+        :param save_tokenizer: String that contains the path to show where to save tokenizer that has been fitted to
+        the training data.
+        """
         self.__dataset = dataset
         self.__train = dataset.train
         self.__test = dataset.test
@@ -44,6 +54,11 @@ class LSTM:
                 f.write(json.dumps(tokenizer_json, ensure_ascii=False))
 
     def train(self, embedding):
+        """
+        Class function to start training the model.
+        :param embedding: Embedding object that contains all the necessary information related to the embedding (i.e.,
+        embedding matrix and word index)
+        """
         train_seq = self.__tokenizer.texts_to_sequences(self.__train["description"])
         train_seq = pad_sequences(train_seq, maxlen=100)
         vocab_size = len(self.__tokenizer.word_index) + 1
@@ -71,6 +86,12 @@ class LSTM:
         self.__model = model
 
     def predict(self, text):
+        """
+        Class function to predict a word based on the given text. This function cleans and tokenizes the raw input text.
+        :param text: Raw input text.
+        :return: Returns the predicted label (string), its probability (float) and the probabilities for all classes/
+        words (array of floats).
+        """
         text = self.__dataset.clean_text(text)
         text = self.__tokenizer.texts_to_sequences(text)
         text = pad_sequences(text, maxlen=100)
@@ -80,13 +101,19 @@ class LSTM:
         return pred_label, pred_max_prob, pred_probs
 
     def evaluate(self):
+        """
+        Evaluates the model on the test set based on the accuracy.
+        :return: Returns the score containing test set accuracy and loss.
+        """
         test_seq = self.__tokenizer.texts_to_sequences(self.__test["description"])
         test_seq = pad_sequences(test_seq, maxlen=100)
         score = self.__model.evaluate(test_seq, self.__test["label"], verbose=0)
-        print(f"Test loss: {score[0]}")
-        print(f"Test accuracy: {score[1]}")
+        return score
 
     def plot_confusion_matrix(self):
+        """
+        Generates a plot containing a confusion matrix with all classes.
+        """
         test_seq = self.__tokenizer.texts_to_sequences(self.__test["description"])
         test_seq = pad_sequences(test_seq, maxlen=100)
         pred_labels = self.__model.predict(test_seq)

@@ -9,12 +9,24 @@ from tqdm import tqdm
 
 
 class PromptManager:
+    """
+    Class to handle all functionality related to prompting ChatGPT for word descriptions.
+    """
     def __init__(self, api_key, args):
+        """
+        Constructor for PromptManager class.
+        :param api_key: OpenAI API key for ChatGPT
+        :param args: Dictionary of arguments used for prompting (found in main.py)
+        """
         self.api_key = api_key
         openai.key = api_key
         self.args = args
 
     def start_prompts(self):
+        """
+        Class function that designs all the prompts, sends them to the ChatGPT API, adds all the responses to a
+        Pandas DataFrame, and saves the frame to a CSV file.
+        """
         df = pd.DataFrame({"description": [], "label": []})
         categories = self.get_categories(self.args["categories_file"])
         for category in categories:
@@ -25,10 +37,8 @@ class PromptManager:
                 variation = variations[i]
                 prompt = self.prepare_prompt(category, length=variation[0], detail=variation[1],
                                              complexity=variation[2], prefix=variation[3])
-                # print(f"\n{prompt}")
                 response = self.make_safe_prompt(prompt)
                 response = self.__clean_responses(response.split("\n"))
-                # print(f"\n{response}")
                 responses.append(response)
 
             for row in responses:
@@ -37,6 +47,15 @@ class PromptManager:
             df.to_csv("./data/recent/descriptions.csv", index=False)
 
     def prepare_prompt(self, entity, length=1, detail=None, complexity=None, prefix=None):
+        """
+        Designs a prompt to be sent to the ChatGPT API.
+        :param entity: The word that will be described (string)
+        :param length: The number of descriptions to be received from ChatGPT (integer)
+        :param detail: The level of detail that should be in ChatGPT's response.
+        :param complexity: The language complexity that should be ChatGPT's response.
+        :param prefix: The word that ChatGPT should use to start its response.
+        :return: Returns the formatted prompt as a string.
+        """
         template = self.args["prompt_template"]
         article = "an" if entity[0] in ["a", "e", "i", "o", "u"] else "a"
         detail = "very short and " if detail == "short" else "very detailed and " if detail == "long" else ""
@@ -49,15 +68,26 @@ class PromptManager:
         return template
 
     def __clean_responses(self, responses):
+        """
+        Cleans the response minimally so it can be saved to the CSV file.
+        :param responses: The raw text response from ChatGPT.
+        :return: Returns the cleaned response from ChatGPT.
+        """
         cleaned = []
         for i in range(len(responses)):
             if responses[i] != "":
-                # responses[i] = responses[i].split(" ")
-                # responses[i] = " ".join(responses[i])
                 cleaned.append(responses[i])
         return cleaned
 
     def make_safe_prompt(self, prompt, max_retries=30, timeout=20):
+        """
+        Performs a safe prompt to the ChatGPT API that catches the APIError and RateLimitError exception that retries
+        a number of times in case of failure.
+        :param prompt: The prompt to be sent to ChatGPT's API.
+        :param max_retries: The maximum number of retries to perform in case of failure.
+        :param timeout: The time between retries (in seconds)
+        :return: Returns the raw response from ChatGPT.
+        """
         try:
             return self.__make_prompt(prompt)
         except (openai.error.APIError, openai.error.RateLimitError):
@@ -71,6 +101,11 @@ class PromptManager:
                     retries += 1
 
     def __make_prompt(self, prompt):
+        """
+        Perform an unsafe prompt to ChatGPT's API.
+        :param prompt: The prompt to be sent to ChatGPT.
+        :return: The response sent back from ChatGPT.
+        """
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -82,5 +117,10 @@ class PromptManager:
         return completion.choices[0].message.content
 
     def get_categories(self, file_path):
+        """
+        Reads all the categories from the categories.txt file and returns them as an array.
+        :param file_path: File path to the categories.txt file.
+        :return: Returns an array containing all the categories from the categories.txt file.
+        """
         with open(file_path, 'r') as file:
             return file.read().split("\n")
