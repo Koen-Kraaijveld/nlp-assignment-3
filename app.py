@@ -45,13 +45,6 @@ def index():
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
 
-    model = keras.models.load_model("./models/saved/lstm-small.h5")
-    with open('./models/saved/tokenizer.json') as f:
-        data = json.load(f)
-        tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
-
     input_json = request.get_json(force=True)
     text = [clean_text(input_json["text"])]
     text = tokenizer.texts_to_sequences(text)
