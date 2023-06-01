@@ -25,6 +25,8 @@ app.config['JSON_SORT_KEYS'] = False
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+model = keras.models.load_model("./models/saved/lstm-small.h5")
+
 
 @app.route("/predict", methods=["POST"])
 @cross_origin()
@@ -37,8 +39,6 @@ def index():
     """
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
-    model = keras.models.load_model("./models/saved/lstm-small.h5")
-    print(f"Loading model: {time.time() - start_time}")
     with open('./models/saved/tokenizer.json') as f:
         data = json.load(f)
         tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
