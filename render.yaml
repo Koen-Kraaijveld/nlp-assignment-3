@@ -1,10 +1,6 @@
-databases:
-  - name: descraibeit
-    user: descraibeit
-
 services:
   - type: web
-    name: mysite
+    name: descraibeit
     env: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn descraibeit.wsgi:application"
