@@ -12,7 +12,7 @@ from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 
 
-model = keras.models.load_model("./models/saved/lstm-small.h5")
+model = keras.models.load_model("../models/saved/lstm-small.h5")
 with open('./models/saved/tokenizer.json') as f:
     data = json.load(f)
     tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
