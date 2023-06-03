@@ -1,4 +1,5 @@
 data/embeddings/glove.6B.100d.txt
+data/embeddings/glove.840B.300d.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/**
