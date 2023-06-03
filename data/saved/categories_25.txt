@@ -19,7 +19,7 @@ van
 hexagon
 bowtie
 dumbbell
-banana
+squiggle
 grapes
 television
 cake
