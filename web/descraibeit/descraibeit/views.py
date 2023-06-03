@@ -12,12 +12,12 @@ from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 
 
-# model = keras.models.load_model("./models/saved/lstm-small.h5")
-# with open('./models/saved/tokenizer.json') as f:
-#     data = json.load(f)
-#     tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-# label_encoder = LabelEncoder()
-# label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
+model = keras.models.load_model("./models/saved/lstm-small.h5")
+with open('./models/saved/tokenizer.json') as f:
+    data = json.load(f)
+    tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+label_encoder = LabelEncoder()
+label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 
 
 def index(request):
@@ -28,20 +28,20 @@ def index(request):
         }
     }
 
-    # if request.GET.get("btnSubmit"):
-    #     description = request.GET.get("txtDescription")
-    #     text = [clean_text(description)]
-    #     text = tokenizer.texts_to_sequences(text)
-    #     text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
-    #     pred_label = model.predict(text)[0]
-    #     response_dict = {}
-    #     for i in range(len(pred_label)):
-    #         label = label_encoder.inverse_transform([i]).tolist()[0]
-    #         response_dict[label] = float(pred_label[i])
-    #     response_dict = dict(sorted(response_dict.items(), key=lambda item: item[1], reverse=True))
-    #     most_probable_word = next(iter(response_dict.items()))
-    #     context["prediction"]["word"] = most_probable_word[0]
-    #     context["prediction"]["probability"] = most_probable_word[1]
+    if request.GET.get("btnSubmit"):
+        description = request.GET.get("txtDescription")
+        text = [clean_text(description)]
+        text = tokenizer.texts_to_sequences(text)
+        text = keras.preprocessing.sequence.pad_sequences(text, maxlen=100)
+        pred_label = model.predict(text)[0]
+        response_dict = {}
+        for i in range(len(pred_label)):
+            label = label_encoder.inverse_transform([i]).tolist()[0]
+            response_dict[label] = float(pred_label[i])
+        response_dict = dict(sorted(response_dict.items(), key=lambda item: item[1], reverse=True))
+        most_probable_word = next(iter(response_dict.items()))
+        context["prediction"]["word"] = most_probable_word[0]
+        context["prediction"]["probability"] = most_probable_word[1]
 
     return render(request, "index.html", context=context)
 
