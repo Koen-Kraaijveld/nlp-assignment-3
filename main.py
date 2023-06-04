@@ -2,15 +2,17 @@ import os
 
 from data.PromptManager import PromptManager
 
+# Start all your responses with
 args = {
     "prompt_template": 'Give me <var1> <var2>unique descriptions of <var3>. Do not include the word '
-                       '"<var4>" or any of its variations in your response. Use <var5> language in your response. '
-                       'Start all your responses with "<var6>".',
-    "length": [20],
+                       '"<var4>" or any of its variations in your response. Use <var5> language in your response.'
+                       '<var6>',
+    "length": [1],
     "detail": ["short", "", "long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
-    "prefix": ["it", "this", "a", "the"],
-    "categories_file": "./data/saved/categories_100.txt"
+    "prefix": ["it", "this", "a", "the", "with", "on", "after", "before", "by", ""],
+    "temperature": [0.2, 0.6, 1.0],
+    "categories_file": "./data/saved/categories_25.txt"
 }
 
 
@@ -21,3 +23,6 @@ def start_prompts():
     """
     manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
     manager.start_prompts()
+
+
+start_prompts()

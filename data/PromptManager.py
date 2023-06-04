@@ -29,15 +29,16 @@ class PromptManager:
         """
         df = pd.DataFrame({"description": [], "label": []})
         categories = self.get_categories(self.args["categories_file"])
-        for category in categories:
+        for category in categories[:3]:
             responses = []
-            variables = [self.args["length"], self.args["detail"], self.args["complexity"], self.args["prefix"]]
+            variables = [self.args["length"], self.args["detail"], self.args["complexity"], self.args["prefix"],
+                         self.args["temperature"]]
             variations = list(itertools.product(*variables))
             for i in tqdm(range(len(variations)), desc=f"Prompting ({category})"):
                 variation = variations[i]
                 prompt = self.prepare_prompt(category, length=variation[0], detail=variation[1],
                                              complexity=variation[2], prefix=variation[3])
-                response = self.make_safe_prompt(prompt)
+                response = self.make_safe_prompt(prompt, temperature=variation[4])
                 response = self.__clean_responses(response.split("\n"))
                 responses.append(response)
 
@@ -59,12 +60,13 @@ class PromptManager:
         template = self.args["prompt_template"]
         article = "an" if entity[0] in ["a", "e", "i", "o", "u"] else "a"
         detail = "very short and " if detail == "short" else "very detailed and " if detail == "long" else ""
+        prefix = f' Start all your responses with "{prefix.capitalize()}".' if prefix is not "" else ""
         template = re.sub(f"<var1>", str(length), template)
         template = re.sub(f"<var2>", detail, template)
         template = re.sub(f"<var3>", f"{article} {entity}", template)
         template = re.sub(f"<var4>", f"{entity}", template)
         template = re.sub(f"<var5>", complexity, template)
-        template = re.sub(f"<var6>", prefix.capitalize(), template)
+        template = re.sub(f"<var6>", prefix, template)
         return template
 
     def __clean_responses(self, responses):
@@ -79,31 +81,33 @@ class PromptManager:
                 cleaned.append(responses[i])
         return cleaned
 
-    def make_safe_prompt(self, prompt, max_retries=30, timeout=20):
+    def make_safe_prompt(self, prompt, temperature=0.7, max_retries=30, timeout=20):
         """
         Performs a safe prompt to the ChatGPT API that catches the APIError and RateLimitError exception that retries
         a number of times in case of failure.
         :param prompt: The prompt to be sent to ChatGPT's API.
+        :param temperature: Temperature variable of ChatGPT.
         :param max_retries: The maximum number of retries to perform in case of failure.
         :param timeout: The time between retries (in seconds)
         :return: Returns the raw response from ChatGPT.
         """
         try:
-            return self.__make_prompt(prompt)
+            return self.__make_prompt(prompt, temperature=temperature)
         except (openai.error.APIError, openai.error.RateLimitError):
             retries = 1
             while retries <= max_retries:
                 print(f"f{retries}. Error. Restarting. Prompt = {prompt}")
                 try:
-                    return self.__make_prompt(prompt)
+                    return self.__make_prompt(prompt, temperature=temperature)
                 except openai.APIError:
                     time.sleep(timeout)
                     retries += 1
 
-    def __make_prompt(self, prompt):
+    def __make_prompt(self, prompt, temperature=0.7):
         """
         Perform an unsafe prompt to ChatGPT's API.
         :param prompt: The prompt to be sent to ChatGPT.
+        :param temperature: Temperature variable of ChatGPT.
         :return: The response sent back from ChatGPT.
         """
         completion = openai.ChatCompletion.create(
@@ -111,7 +115,8 @@ class PromptManager:
             messages=[
                 {"role": "user",
                  "content": prompt}
-            ]
+            ],
+            temperature=temperature
         )
 
         return completion.choices[0].message.content
