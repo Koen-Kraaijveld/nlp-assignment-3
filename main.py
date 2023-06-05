@@ -7,7 +7,7 @@ args = {
     "prompt_template": 'Give me <var1> <var2>unique descriptions of <var3>. Do not include the word '
                        '"<var4>" or any of its variations in your response. Use <var5> language in your response.'
                        '<var6>',
-    "length": [1],
+    "length": [20],
     "detail": ["short", "", "long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
     "prefix": ["it", "this", "a", "the", "with", "in", "by", "on", "after", "before", ""],
