@@ -59,7 +59,7 @@ class PromptManager:
         """
         template = self.args["prompt_template"]
         article = "an" if entity[0] in ["a", "e", "i", "o", "u"] else "a"
-        detail = "very short and " if detail == "short" else "very detailed and " if detail == "long" else ""
+        detail = self.__prepare_prompt_detail(detail)
         prefix = f' Start all your responses with "{prefix.capitalize()}".' if prefix is not "" else ""
         template = re.sub(f"<var1>", str(length), template)
         template = re.sub(f"<var2>", detail, template)
@@ -68,6 +68,17 @@ class PromptManager:
         template = re.sub(f"<var5>", complexity, template)
         template = re.sub(f"<var6>", prefix, template)
         return template
+
+    def __prepare_prompt_detail(self, detail):
+        if detail == "very short":
+            return "very short and "
+        if detail == "short":
+            return "short and "
+        if detail == "long":
+            return "detailed and "
+        if detail == "very long":
+            return "very detail and "
+        return ""
 
     def __clean_responses(self, responses):
         """

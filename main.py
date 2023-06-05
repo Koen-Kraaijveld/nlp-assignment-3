@@ -8,9 +8,9 @@ args = {
                        '"<var4>" or any of its variations in your response. Use <var5> language in your response.'
                        '<var6>',
     "length": [1],
-    "detail": ["short", "", "long"],
+    "detail": ["very short", "short", "", "long", "very long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
-    "prefix": ["it", "this", "a", "the", "with", "in", "by", "on", "after", "before", ""],
+    "prefix": ["it", "this", "a", "the", "with", ""],
     "temperature": [0.2, 0.6, 1.0],
     "categories_file": "./data/saved/categories_25.txt"
 }
