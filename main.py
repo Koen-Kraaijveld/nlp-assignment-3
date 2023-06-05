@@ -10,7 +10,7 @@ args = {
     "length": [1],
     "detail": ["short", "", "long"],
     "complexity": ["very simple", "simple", "complex", "very complex"],
-    "prefix": ["it", "this", "a", "the", "with", "on", "after", "before", "by", ""],
+    "prefix": ["it", "this", "a", "the", "with", "in", "by", "on", "after", "before", ""],
     "temperature": [0.2, 0.6, 1.0],
     "categories_file": "./data/saved/categories_25.txt"
 }
