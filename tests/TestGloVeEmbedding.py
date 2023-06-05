@@ -70,11 +70,18 @@ class TestGloVeEmbedding6B100d(unittest.TestCase):
                          'crown', 'peas', 'computer', 'calculator', 'hexagon', 'mountain', 'book']
         self.embeddings.visualize_words(words, special_words=special_words)
 
-    def test_calculate_k_most_distant_words_1(self):
+    def test_visualize_words_100_special_words_4(self):
         words = load_categories("../data/saved/categories_100.txt")
-        avg_distances, med_distances, avg_cosine_sims, med_cosine_sims = self.embeddings.calculate_k_most_distant_words(
-            words, k=25, n=100)
-        print_distance_cosine_sim_arrays(avg_distances, med_distances, avg_cosine_sims, med_cosine_sims)
+        special_words = ['peas', 'butterfly', 'oven', 'stairs', 'postcard', 'whale', 'yacht', 'violin', 'crown',
+                         'horse', 'nail', 'teapot', 'bulldozer', 'sword', 'triangle', 'television', 'mountain',
+                         'basketball', 'matches', 'tent', 'peanut', 'pliers', 'submarine', 'toe', 'beach']
+        self.embeddings.visualize_words(words, special_words=special_words)
+
+    def test_calculate_k_most_distant_words_1(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        min_distances = self.embeddings.calculate_k_words_max_min_distance(
+            words, k=25, n=100000)
+        print_distance_cosine_sim_array(min_distances)
 
 
 class TestGloVeEmbedding840B300d(unittest.TestCase):
@@ -102,9 +109,9 @@ class TestGloVeEmbedding840B300d(unittest.TestCase):
 
     def test_calculate_k_most_distant_words_1(self):
         words = load_categories("../data/saved/categories_289.txt")
-        avg_distances, med_distances, avg_cosine_sims, med_cosine_sims = self.embeddings.calculate_k_most_distant_words(
-            words, k=25, n=1000000)
-        print_distance_cosine_sim_arrays(avg_distances, med_distances, avg_cosine_sims, med_cosine_sims)
+        min_distances = self.embeddings.calculate_k_words_max_min_distance(
+            words, k=25, n=100000)
+        print_distance_cosine_sim_array(min_distances)
 
 # ['ear', 'knee', 'hurricane', 'bench', 'clarinet', 'hedgehog', 'blackberry', 'sailboat', 'campfire', 'eyeglasses', 'camel', 'guitar', 'basketball', 'toothbrush', 'trombone', 'streetlight', 'onion', 'van', 'hexagon', 'bowtie', 'dumbbell', 'squiggle', 'grapes', 'television', 'cake']
 # ['brain', 'oven', 'mushroom', 'dumbbell', 'diamond', 'spreadsheet', 'elephant', 'toe', 'sheep', 'keyboard', 'dresser', 'toothpaste', 'snorkel', 'dishwasher', 'pants', 'trombone', 'mountain', 'pliers', 'streetlight', 'crab', 'clarinet', 'sun', 'van', 'square', 'telephone']

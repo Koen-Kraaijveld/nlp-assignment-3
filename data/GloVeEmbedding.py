@@ -66,38 +66,23 @@ class GloVeEmbedding:
 
         plt.show()
 
-    def calculate_k_most_distant_words(self, words, k, n=100):
+    def calculate_k_words_max_min_distance(self, words, k, n=100):
         embedding_word_vectors = {word: self.embedding_index[word] for word in words}
 
-        avg_cosine_sims = []
-        med_cosine_sims = []
-        avg_distances = []
-        med_distances = []
+        min_distances = []
         for _ in tqdm(range(n)):
             k_vectors = dict(random.sample(embedding_word_vectors.items(), k))
-            cosine_sims = []
             distances = []
             for v1 in k_vectors.values():
                 for v2 in k_vectors.values():
                     if not np.array_equal(v1, v2):
-                        cosine_sim = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-                        cosine_sims.append(cosine_sim)
                         distance = euclidean(v1, v2)
                         distances.append(distance)
-            avg_distance = sum(distances) / len(distances)
-            med_distance = np.median(distances)
-            avg_cosine_sim = sum(cosine_sims) / len(cosine_sims)
-            med_cosine_sim = np.median(cosine_sims)
-            avg_distances.append((str(list(k_vectors.keys())), avg_distance))
-            med_distances.append((str(list(k_vectors.keys())), med_distance))
-            avg_cosine_sims.append((str(list(k_vectors.keys())), avg_cosine_sim))
-            med_cosine_sims.append((str(list(k_vectors.keys())), med_cosine_sim))
+            min_distance = min(distances)
+            min_distances.append((str(list(k_vectors.keys())), min_distance))
 
-        avg_distances = sorted(avg_distances, key=lambda x: x[1], reverse=True)
-        med_distances = sorted(med_distances, key=lambda x: x[1], reverse=True)
-        avg_cosine_sims = sorted(avg_cosine_sims, key=lambda x: x[1])
-        med_cosine_sims = sorted(med_cosine_sims, key=lambda x: x[1])
-        return avg_distances, med_distances, avg_cosine_sims, med_cosine_sims
+        min_distances = sorted(min_distances, key=lambda x: x[1], reverse=True)
+        return min_distances
 
     def __getitem__(self, item):
         return self.embedding_index[item]
