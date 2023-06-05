@@ -29,7 +29,7 @@ class PromptManager:
         """
         df = pd.DataFrame({"description": [], "label": []})
         categories = self.get_categories(self.args["categories_file"])
-        for category in categories[:3]:
+        for category in categories:
             responses = []
             variables = [self.args["length"], self.args["detail"], self.args["complexity"], self.args["prefix"],
                          self.args["temperature"]]
@@ -107,7 +107,7 @@ class PromptManager:
         except (openai.error.APIError, openai.error.RateLimitError):
             retries = 1
             while retries <= max_retries:
-                print(f"f{retries}. Error. Restarting. Prompt = {prompt}")
+                print(f"\n{retries}. Error. Restarting. Prompt = {prompt}")
                 try:
                     return self.__make_prompt(prompt, temperature=temperature)
                 except openai.APIError:

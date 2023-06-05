@@ -2,7 +2,6 @@ import os
 
 from data.PromptManager import PromptManager
 
-# Start all your responses with
 args = {
     "prompt_template": 'Give me <var1> <var2>unique descriptions of <var3>. Do not include the word '
                        '"<var4>" or any of its variations in your response. Use <var5> language in your response.'
