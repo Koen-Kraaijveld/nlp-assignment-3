@@ -60,9 +60,10 @@ class GloVeEmbedding:
             color = "blue" if special_words is not None else None
             if special_words is not None and word in special_words:
                 plt.scatter(x, y, color="red")
+                plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
             else:
                 plt.scatter(x, y, color=color)
-            plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
+            # plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
 
         plt.show()
 

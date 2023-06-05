@@ -83,6 +83,11 @@ class TestGloVeEmbedding6B100d(unittest.TestCase):
             words, k=25, n=100000)
         print_distance_cosine_sim_array(min_distances)
 
+    def test_greedy_calculate_k_most_distant_words_1(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        vectors = self.embeddings.greedy_calculate_k_words_max_min_distance(words, k=5)
+        self.embeddings.visualize_words(words, special_words=vectors)
+
 
 class TestGloVeEmbedding840B300d(unittest.TestCase):
     def setUp(self) -> None:
@@ -105,6 +110,13 @@ class TestGloVeEmbedding840B300d(unittest.TestCase):
         special_words = ['brain', 'oven', 'mushroom', 'dumbbell', 'diamond', 'spreadsheet', 'elephant', 'toe', 'sheep',
                          'keyboard', 'dresser', 'toothpaste', 'snorkel', 'dishwasher', 'pants', 'trombone', 'mountain',
                          'pliers', 'streetlight', 'crab', 'clarinet', 'sun', 'van', 'square', 'telephone']
+        self.embeddings.visualize_words(words, special_words=special_words)
+
+    def test_visualize_words_289_special_words_2(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        special_words = ['vase', 'door', 'bus', 'sailboat', 'nose', 'toothbrush', 'book', 'map', 'radio', 'syringe',
+                         'submarine', 'wristwatch', 'hospital', 'snowman', 'rhinoceros', 'grass', 'crown',
+                         'streetlight', 'telephone', 'guitar', 'helmet', 'blueberry', 'ant', 'helicopter', 'megaphone']
         self.embeddings.visualize_words(words, special_words=special_words)
 
     def test_calculate_k_most_distant_words_1(self):
