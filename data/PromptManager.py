@@ -77,7 +77,7 @@ class PromptManager:
         if detail == "long":
             return "detailed and "
         if detail == "very long":
-            return "very detail and "
+            return "very detailed and "
         return ""
 
     def __clean_responses(self, responses):

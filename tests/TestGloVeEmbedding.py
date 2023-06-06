@@ -1,7 +1,8 @@
+import itertools
 import unittest
 
 from data.GloVeEmbedding import GloVeEmbedding
-from util import load_categories
+from util import load_categories, find_maximal_subset
 
 
 def print_distance_cosine_sim_arrays(avg_distances, med_distances, avg_cosine_sims, med_cosine_sims, n=5):
@@ -17,7 +18,7 @@ def print_distance_cosine_sim_arrays(avg_distances, med_distances, avg_cosine_si
 
 def print_distance_cosine_sim_array(array, n=5):
     for i in range(len(array[:n])):
-        print(f"Number {i+1}")
+        print(f"Number {i + 1}")
         print(f"   {array[i][0]}")
         print(f"   {array[i][1]}")
 
@@ -88,6 +89,28 @@ class TestGloVeEmbedding6B100d(unittest.TestCase):
         vectors = self.embeddings.greedy_calculate_k_words_max_min_distance(words, k=5)
         self.embeddings.visualize_words(words, special_words=vectors)
 
+    def test_calculate_min_distance_between_words(self):
+        words = ["snail", "van"]
+        min_distance = self.embeddings.calculate_min_distance_between_words(words)
+        print(min_distance)
+
+    def test_calculate_min_distance_between_words_manual_selection(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        manual_words = ["snail", "van", "oven", "hurricane", "hat", "passport", "violin", "broccoli", "fish",
+                        "hospital", "squirrel", "angel", "shovel", "toothbrush"]
+        min_distance = self.embeddings.calculate_min_distance_between_words(manual_words)
+        print(f"Min. distance: {min_distance}")
+        print(f"Number of words: {len(manual_words)}")
+        self.embeddings.visualize_words(words, special_words=manual_words)
+
+    def test_temp(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        embedding_word_vectors = {word: self.embeddings.embedding_index[word] for word in words}
+        subset = find_maximal_subset(embedding_word_vectors)
+        min_distance = self.embeddings.calculate_min_distance_between_words(subset)
+        print(min_distance)
+        self.embeddings.visualize_words(words, special_words=subset)
+
 
 class TestGloVeEmbedding840B300d(unittest.TestCase):
     def setUp(self) -> None:
@@ -124,6 +147,23 @@ class TestGloVeEmbedding840B300d(unittest.TestCase):
         min_distances = self.embeddings.calculate_k_words_max_min_distance(
             words, k=25, n=100000)
         print_distance_cosine_sim_array(min_distances)
+
+    def test_temp(self):
+        words = load_categories("../data/saved/categories_289.txt")
+        embedding_word_vectors = {word: self.embeddings.embedding_index[word] for word in words}
+        subset = find_maximal_subset(embedding_word_vectors)
+        min_distance = self.embeddings.calculate_min_distance_between_words(subset)
+        print(subset)
+        print(min_distance)
+        self.embeddings.visualize_words(words, special_words=subset)
+        # ('airplane', 'laptop', 8.579513549804688)
+
+        subset_2 = ['airplane', 'broccoli', 'dumbbell', 'stitches', 'dishwasher', 'stethoscope', 'van', 'blueberry',
+                    'cello', 'goatee', 'basketball', 'necklace', 'church', 'telephone', 'streetlight', 'anvil',
+                    'spreadsheet', 'stereo', 'binoculars', 'rhinoceros', 'beach', 'brain', 'campfire', 'tornado',
+                    'laptop']
+        min_distance_2 = self.embeddings.calculate_min_distance_between_words(subset_2)
+        print(min_distance_2)
 
 # ['ear', 'knee', 'hurricane', 'bench', 'clarinet', 'hedgehog', 'blackberry', 'sailboat', 'campfire', 'eyeglasses', 'camel', 'guitar', 'basketball', 'toothbrush', 'trombone', 'streetlight', 'onion', 'van', 'hexagon', 'bowtie', 'dumbbell', 'squiggle', 'grapes', 'television', 'cake']
 # ['brain', 'oven', 'mushroom', 'dumbbell', 'diamond', 'spreadsheet', 'elephant', 'toe', 'sheep', 'keyboard', 'dresser', 'toothpaste', 'snorkel', 'dishwasher', 'pants', 'trombone', 'mountain', 'pliers', 'streetlight', 'crab', 'clarinet', 'sun', 'van', 'square', 'telephone']

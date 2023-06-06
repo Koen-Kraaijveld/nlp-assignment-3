@@ -60,10 +60,9 @@ class GloVeEmbedding:
             color = "blue" if special_words is not None else None
             if special_words is not None and word in special_words:
                 plt.scatter(x, y, color="red")
-                plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
             else:
                 plt.scatter(x, y, color=color)
-            # plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
+            plt.annotate(word, (x, y), xytext=(5, 2), textcoords="offset points", ha="right", va="bottom")
 
         plt.show()
 
@@ -84,6 +83,17 @@ class GloVeEmbedding:
 
         min_distances = sorted(min_distances, key=lambda x: x[1], reverse=True)
         return min_distances
+
+    def calculate_min_distance_between_words(self, words):
+        embedding_word_vectors = {word: self.embedding_index[word] for word in words}
+
+        distances = []
+        for w1, v1 in embedding_word_vectors.items():
+            for w2, v2 in embedding_word_vectors.items():
+                if not np.array_equal(v1, v2):
+                    distance = euclidean(v1, v2)
+                    distances.append((w1, w2, distance))
+        return min(distances, key=lambda item: item[2])
 
     def __getitem__(self, item):
         return self.embedding_index[item]
