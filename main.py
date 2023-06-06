@@ -24,4 +24,4 @@ def start_prompts():
     manager.start_prompts()
 
 
-# start_prompts()
+start_prompts()

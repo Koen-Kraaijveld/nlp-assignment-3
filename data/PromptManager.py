@@ -104,7 +104,7 @@ class PromptManager:
         """
         try:
             return self.__make_prompt(prompt, temperature=temperature)
-        except (openai.error.APIError, openai.error.RateLimitError):
+        except (openai.error.APIError, openai.error.RateLimitError, openai.error.Timeout):
             retries = 1
             while retries <= max_retries:
                 print(f"\n{retries}. Error. Restarting. Prompt = {prompt}")
