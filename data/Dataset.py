@@ -32,10 +32,10 @@ class Dataset:
 
         pipeline = PreprocessingPipeline(self.data, pipeline=[
             "make_lowercase",
-            "expand_contractions",
+            # "expand_contractions",
             "clean_text",
-            "remove_stopwords",
-            "lemmatize",
+            # "remove_stopwords",
+            # "lemmatize",
             "remove_duplicates"
         ])
 
