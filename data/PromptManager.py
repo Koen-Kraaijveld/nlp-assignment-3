@@ -92,7 +92,7 @@ class PromptManager:
                 cleaned.append(responses[i])
         return cleaned
 
-    def make_safe_prompt(self, prompt, temperature=0.7, max_retries=30, timeout=20):
+    def make_safe_prompt(self, prompt, temperature=0.7, max_retries=30, timeout=30):
         """
         Performs a safe prompt to the ChatGPT API that catches the APIError and RateLimitError exception that retries
         a number of times in case of failure.
@@ -110,7 +110,7 @@ class PromptManager:
                 print(f"\n{retries}. Error. Restarting. Prompt = {prompt}")
                 try:
                     return self.__make_prompt(prompt, temperature=temperature)
-                except openai.APIError:
+                except (openai.error.APIError, openai.error.RateLimitError, openai.error.Timeout):
                     time.sleep(timeout)
                     retries += 1
 
