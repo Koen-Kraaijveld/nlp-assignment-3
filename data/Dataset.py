@@ -5,11 +5,14 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 
+from .PreprocessingPipeline import PreprocessingPipeline
+
 
 class Dataset:
     """
     Class to handle all necessary functionality and data handling related to the training, test and validation data.
     """
+
     def __init__(self, csv_path, test_split, val_split=0., shuffle=False, remove_stopwords=False):
         """
         Constructor for the Dataset class.
@@ -20,22 +23,46 @@ class Dataset:
         :param remove_stopwords: Boolean to determine if stopwords (e.g., 'a', 'the', etc.) should be removed during
         preprocessing.
         """
-        self.data = pd.read_csv(csv_path)
-        self.data["description"] = self.clean_text(self.data["description"], remove_stopwords=remove_stopwords)
-        self.__label_encoder = LabelEncoder()
-        self.data["label"] = self.__label_encoder.fit_transform(self.data["label"])
-        if shuffle:
-            self.data = self.data.sample(frac=1).reset_index(drop=True)
-        self.train = self.data[:int(len(self.data) * (1 - test_split))]
-        self.test = self.data[len(self.train):]
-        if val_split > 0:
-            temp = self.train
-            self.train = self.train[:int(len(self.train) * (1 - val_split))]
-            self.val = temp[len(self.train):]
-        self.vocab_size = self.__count_vocab_size()
-        np.save("./models/saved/labels.npy", self.__label_encoder.classes_)
+        self.test_split = test_split
+        self.val_split = val_split
+        self.shuffle = shuffle
+        self.remove_stopwords = remove_stopwords
 
-    def clean_text(self, text, remove_stopwords=False):
+        self.data = pd.read_csv(csv_path)
+
+        pipeline = PreprocessingPipeline(self.data, pipeline=[
+            "make_lowercase",
+            "expand_contractions",
+            "clean_text",
+            "remove_stopwords",
+            "lemmatize",
+            "remove_duplicates"
+        ])
+
+        pipeline.apply()
+
+        self.data["label"] = self.__encode_labels(self.data["label"])
+        self.train, self.test, self.val = self.__train_test_val_split()
+
+    def __train_test_val_split(self):
+        if self.shuffle:
+            self.data = self.data.sample(frac=1).reset_index(drop=True)
+        train = self.data[:int(len(self.data) * (1 - self.test_split))]
+        test = self.data[len(train):]
+        if self.val_split > 0:
+            temp = train
+            train = train[:int(len(train) * (1 - self.val_split))]
+            val = temp[len(train):]
+            return train, test, val
+        return train, test
+
+    def __encode_labels(self, labels):
+        self.__label_encoder = LabelEncoder()
+        encoded = self.__label_encoder.fit_transform(labels)
+        np.save("./models/saved/labels.npy", self.__label_encoder.classes_)
+        return encoded
+
+    def clean_text(self, text):
         """
         Class function that cleans all the data by removing punctuation, hyperlinks, double whitespaces, etc.
         :param text: Raw input text split into sentences.
@@ -54,7 +81,7 @@ class Dataset:
             sentence = re.sub(r'^(\d{1,2})(.|\)) ', '', sentence)
             sentence = re.sub(r'  ', ' ', sentence)
 
-            if remove_stopwords:
+            if self.remove_stopwords:
                 sentence = sentence.split()
                 stops = set(stopwords.words("english"))
                 sentence = [w for w in sentence if not w in stops]
@@ -101,5 +128,3 @@ class Dataset:
         :return: String representation of the Pandas Dataframe containing the full data.
         """
         return str(self.data)
-
-

@@ -27,10 +27,12 @@ tensorflow.keras.utils.set_random_seed(42)
 random.seed(42)
 np.random.seed(42)
 
+
 class LSTM:
     """
     Class in which the LSTM model is implemented.
     """
+
     def __init__(self, dataset, load_model_path=None, save_tokenizer=None):
         """
         Constructor for the LSTM class.
@@ -42,7 +44,6 @@ class LSTM:
         self.__dataset = dataset
         self.__train = dataset.train
         self.__test = dataset.test
-        self.__vocab_size = dataset.vocab_size
         self.__tokenizer = Tokenizer()
         self.__tokenizer.fit_on_texts(self.__train["description"])
 

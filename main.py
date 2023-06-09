@@ -1,9 +1,9 @@
 import os
 
-import pandas
-
-import util
+from data.GloVeEmbedding import GloVeEmbedding
 from data.PromptManager import PromptManager
+from data.Dataset import Dataset
+from models.LSTM import LSTM
 
 args = {
     "prompt_template": 'Give me <var1> <var2>unique descriptions of <var3>. Do not include the word '
@@ -25,3 +25,9 @@ def start_prompts():
     """
     manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
     manager.start_prompts()
+
+
+glove = GloVeEmbedding("./data/embeddings/glove.6B.100d.txt")
+dataset = Dataset(csv_path="./data/saved/descriptions_25.csv", test_split=0.4, val_split=0.2, shuffle=True)
+model = LSTM(dataset)
+model.train(embedding=glove)
