@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial.distance import cdist, euclidean
+import pandas as pd
 
 
 def load_categories(file_path):
@@ -23,3 +24,10 @@ def find_maximal_subset(vector_dict):
         distances = np.minimum(distances, new_distances)
 
     return selected_subset
+
+
+def concat_csv_files_to_df(csv_files, save_csv_path=None):
+    df = pd.concat([pd.read_csv(csv) for csv in csv_files], ignore_index=True)
+    if save_csv_path is not None:
+        df.to_csv(save_csv_path, index=False)
+    return df

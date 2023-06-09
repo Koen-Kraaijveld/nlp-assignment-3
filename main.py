@@ -1,5 +1,8 @@
 import os
 
+import pandas
+
+import util
 from data.PromptManager import PromptManager
 
 args = {
@@ -22,6 +25,3 @@ def start_prompts():
     """
     manager = PromptManager(os.getenv("OPENAI_API_KEY"), args)
     manager.start_prompts()
-
-
-start_prompts()
