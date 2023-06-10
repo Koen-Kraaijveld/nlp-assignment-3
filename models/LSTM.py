@@ -11,6 +11,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, TextVectorization, Bidirectional, Dropout
+from keras.layers import Bidirectional
 from tensorflow.keras.layers import LSTM as LSTMLayer
 from tensorflow.keras.optimizers import Adam
 # from tensorflow.keras.saving import load_model
@@ -67,16 +68,8 @@ class LSTM:
 
         model = Sequential()
         model.add(Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=100, trainable=False))
-        model.add(LSTMLayer(256, return_sequences=True))
-        model.add(LSTMLayer(256, return_sequences=True))
-        model.add(LSTMLayer(256, return_sequences=True))
+        model.add(Bidirectional(LSTMLayer(256, return_sequences=True)))
         model.add(GlobalMaxPooling1D())
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.7))
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.7))
         model.add(Dense(256, activation='relu'))
