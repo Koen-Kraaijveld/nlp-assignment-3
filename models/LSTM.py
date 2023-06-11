@@ -34,7 +34,7 @@ class LSTM:
     Class in which the LSTM model is implemented.
     """
 
-    def __init__(self, dataset, load_model_path=None, save_tokenizer=None):
+    def __init__(self, dataset, embedding, load_model_path=None, save_tokenizer=None):
         """
         Constructor for the LSTM class.
         :param dataset: Dataset object that contains all the necessary, correctly formatted data.
@@ -45,29 +45,30 @@ class LSTM:
         self.__dataset = dataset
         self.__train = dataset.train
         self.__test = dataset.test
+        self.__embedding = embedding
         self.__tokenizer = Tokenizer()
         self.__tokenizer.fit_on_texts(self.__train["description"])
+        self.__model = None
 
-        if load_model_path is not None:
-            self.__model = load_model(load_model_path)
         if save_tokenizer is not None:
             tokenizer_json = self.__tokenizer.to_json()
             with io.open(save_tokenizer, 'w+', encoding='utf-8') as f:
                 f.write(json.dumps(tokenizer_json, ensure_ascii=False))
 
-    def train(self, embedding):
+    def train(self):
         """
         Class function to start training the model.
         :param embedding: Embedding object that contains all the necessary information related to the embedding (i.e.,
         embedding matrix and word index)
         """
         train_seq = self.__tokenizer.texts_to_sequences(self.__train["description"])
-        train_seq = pad_sequences(train_seq, maxlen=100)
+        train_seq = pad_sequences(train_seq, maxlen=self.__embedding.dimensionality)
         vocab_size = len(self.__tokenizer.word_index) + 1
-        embedding_matrix = embedding.compute_embedding_matrix(self.__tokenizer, vocab_size)
+        embedding_matrix = self.__embedding.compute_embedding_matrix(self.__tokenizer, vocab_size)
 
         model = Sequential()
-        model.add(Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=100, trainable=False))
+        model.add(Embedding(vocab_size, self.__embedding.dimensionality, weights=[embedding_matrix],
+                            input_length=self.__embedding.dimensionality, trainable=False))
         model.add(Bidirectional(LSTMLayer(256, return_sequences=True)))
         model.add(GlobalMaxPooling1D())
         model.add(Dense(256, activation='relu'))
@@ -84,7 +85,7 @@ class LSTM:
         es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
                   validation_split=0.2, epochs=1000, verbose=1, callbacks=[es])
-        model.save("./models/saved/lstm-small.h5", save_format="h5")
+        model.save("./models/saved/lstm.h5", save_format="h5")
         self.__model = model
 
     def predict(self, text):
@@ -96,20 +97,24 @@ class LSTM:
         """
         text = self.__dataset.clean_text(text)
         text = self.__tokenizer.texts_to_sequences(text)
-        text = pad_sequences(text, maxlen=100)
+        text = pad_sequences(text, maxlen=self.__embedding.dimensionality)
         pred_probs = self.__model.predict(text)
         pred_max_prob = pred_probs.max(axis=-1)
         pred_label = self.__dataset.decode_label(pred_probs.argmax(axis=-1))
         return pred_label, pred_max_prob, pred_probs
 
-    def evaluate(self):
+    def evaluate(self, load_model_path=None):
         """
         Evaluates the model on the test set based on the accuracy.
         :return: Returns the score containing test set accuracy and loss.
         """
+        if load_model_path is not None:
+            self.__model = load_model(load_model_path)
         test_seq = self.__tokenizer.texts_to_sequences(self.__test["description"])
-        test_seq = pad_sequences(test_seq, maxlen=100)
+        test_seq = pad_sequences(test_seq, maxlen=self.__embedding.dimensionality)
         score = self.__model.evaluate(test_seq, self.__test["label"], verbose=0)
+        print(f"Test set loss: {score[0]}")
+        print(f"Test set accuracy: {score[1]}")
         return score
 
     def plot_confusion_matrix(self):
@@ -117,11 +122,14 @@ class LSTM:
         Generates a plot containing a confusion matrix with all classes.
         """
         test_seq = self.__tokenizer.texts_to_sequences(self.__test["description"])
-        test_seq = pad_sequences(test_seq, maxlen=100)
+        test_seq = pad_sequences(test_seq, maxlen=self.__embedding.dimensionality)
         pred_labels = self.__model.predict(test_seq)
         pred_labels = [y.argmax(axis=-1) for y in pred_labels]
-        matrix = confusion_matrix(self.__test["label"], pred_labels)
         labels = self.__dataset.decode_label(range(self.__test["label"].nunique()))
-        cm_display = ConfusionMatrixDisplay(matrix, display_labels=labels)
-        cm_display.plot(xticks_rotation=60)
+        cm_display = ConfusionMatrixDisplay.from_predictions(self.__test["label"], pred_labels,
+                                                             normalize="true", display_labels=labels,
+                                                             values_format=".2f", include_values=False)
+        plt.xticks(rotation=90)
+        plt.subplots_adjust(bottom=0.17)
+        plt.savefig("./visualizations/confusion_matrix_lstm.png", bbox_inches="tight")
         plt.show()

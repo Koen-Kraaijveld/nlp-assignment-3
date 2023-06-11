@@ -1,3 +1,4 @@
+import os
 import random
 
 import matplotlib.pyplot as plt
@@ -5,6 +6,7 @@ from sklearn.manifold import TSNE
 import numpy as np
 from scipy.spatial.distance import euclidean
 from tqdm import tqdm
+
 
 class GloVeEmbedding:
     """
@@ -17,6 +19,8 @@ class GloVeEmbedding:
         :param file_path: File path to where the GloVe embeddings are stored.
         """
         self.embedding_index = self.__get_embedding_index(file_path)
+        self.dimensionality = int(os.path.split(file_path)[1].split(".")[2][:-1])
+        print(self.dimensionality)
 
     def __get_embedding_index(self, file_path):
         """
@@ -41,7 +45,7 @@ class GloVeEmbedding:
         :param size_of_vocabulary: Vocabulary size (integer)
         :return: Returns the embedding matrix.
         """
-        embedding_matrix = np.zeros((size_of_vocabulary, 100))
+        embedding_matrix = np.zeros((size_of_vocabulary, self.dimensionality))
 
         for word, i in tokenizer.word_index.items():
             embedding_vector = self.embedding_index.get(word)
@@ -97,4 +101,3 @@ class GloVeEmbedding:
 
     def __getitem__(self, item):
         return self.embedding_index[item]
-

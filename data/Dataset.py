@@ -32,9 +32,9 @@ class Dataset:
 
         pipeline = PreprocessingPipeline(self.data, pipeline=[
             "make_lowercase",
-            # "expand_contractions",
+            "expand_contractions",
             "clean_text",
-            # "remove_stopwords",
+            "remove_stopwords",
             # "lemmatize",
             "remove_duplicates"
         ])
@@ -42,7 +42,7 @@ class Dataset:
         pipeline.apply()
 
         self.data["label"] = self.__encode_labels(self.data["label"])
-        self.train, self.test, self.val = self.__train_test_val_split()
+        self.train, self.test = self.__train_test_val_split()
 
     def __train_test_val_split(self):
         if self.shuffle:
