@@ -10,7 +10,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, TextVectorization, Bidirectional, Dropout
+from tensorflow.keras.layers import Dense, TextVectorization, Bidirectional, Dropout, BatchNormalization, LeakyReLU
 from keras.layers import Bidirectional
 from tensorflow.keras.layers import LSTM as LSTMLayer
 from tensorflow.keras.optimizers import Adam
@@ -71,20 +71,27 @@ class LSTM:
                             input_length=self.__embedding.dimensionality, trainable=False))
         model.add(Bidirectional(LSTMLayer(256, return_sequences=True)))
         model.add(GlobalMaxPooling1D())
-        model.add(Dense(256, activation='relu'))
+        model.add(Dense(256))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
         model.add(Dropout(0.7))
-        model.add(Dense(256, activation='relu'))
-        model.add(Dropout(0.7))
-        model.add(Dense(256, activation='relu'))
+        model.add(Dense(256))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
+        model.add(Dense(256))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
         model.add(Dropout(0.7))
         model.add(Dense(25, activation='softmax'))
         optimizer = Adam(learning_rate=0.001)
         model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=["acc"])
         print(model.summary())
 
+        scheduler = tensorflow.keras.optimizers.schedules.CosineDecay(initial_learning_rate=0.001, decay_steps=50)
+        scheduler = tensorflow.keras.callbacks.LearningRateScheduler(scheduler)
         es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
-                  validation_split=0.2, epochs=1000, verbose=1, callbacks=[es])
+                  validation_split=0.2, epochs=1000, verbose=1, callbacks=[es, scheduler])
         model.save("./models/saved/lstm.h5", save_format="h5")
         self.__model = model
 
