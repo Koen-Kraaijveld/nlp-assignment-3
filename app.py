@@ -26,21 +26,23 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-def load_resources():
-    global label_encoder, model
-    with open('./models/saved/tokenizer.json') as f:
-        data = json.load(f)
-        global tokenizer
-        tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-    label_encoder = LabelEncoder()
-    label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
-    model = keras.models.load_model("./models/saved/lstm-small.h5")
-    print(model)
-    print(label_encoder)
-    print(tokenizer)
-
-load_resources()
-print("All resources loaded...")
+# def load_resources():
+#     global label_encoder, model
+#     with open('./models/saved/tokenizer.json') as f:
+#         data = json.load(f)
+#         global tokenizer
+#         tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+#     label_encoder = LabelEncoder()
+#     label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
+#     model = keras.models.load_model("./models/saved/lstm-small.h5")
+#
+#     print(model)
+#     print(label_encoder)
+#     print(tokenizer)
+#
+#
+# load_resources()
+# print("All resources loaded...")
 
 
 @app.route("/predict", methods=["POST"])
@@ -57,12 +59,12 @@ def index():
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
 
-    # model = keras.models.load_model("./models/saved/lstm-small.h5")
-    # with open('./models/saved/tokenizer.json') as f:
-    #     data = json.load(f)
-    #     tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
-    # label_encoder = LabelEncoder()
-    # label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
+    model = keras.models.load_model("./models/saved/lstm-small.h5")
+    with open('./models/saved/tokenizer.json') as f:
+        data = json.load(f)
+        tokenizer = keras_preprocessing.text.tokenizer_from_json(data)
+    label_encoder = LabelEncoder()
+    label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
 
     input_json = request.get_json(force=True)
     text = [clean_text(input_json["text"])]
