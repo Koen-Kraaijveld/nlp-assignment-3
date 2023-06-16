@@ -5,7 +5,7 @@ import requests
 # print('response from server:', res.text)
 # dictFromServer = res.json()
 
-dictToSend = {"text": "This majestic predator hunts for prey on the plains of Africa."}
+dictToSend = {"text": "Small, sweet black fruit."}
 res = requests.post('https://nlp-assignment-3.onrender.com/predict', json=dictToSend)
 print('response from server:', res.text)
 dictFromServer = res.json()

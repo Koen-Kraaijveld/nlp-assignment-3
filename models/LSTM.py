@@ -24,9 +24,9 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
 # Set the seed for reproducibility
-# tensorflow.keras.utils.set_random_seed(42)
-# random.seed(42)
-# np.random.seed(42)
+tensorflow.keras.utils.set_random_seed(42)
+random.seed(42)
+np.random.seed(42)
 
 
 class LSTM:
