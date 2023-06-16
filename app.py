@@ -35,7 +35,9 @@ def load_resources():
     label_encoder = LabelEncoder()
     label_encoder.classes_ = np.load("./models/saved/labels.npy", allow_pickle=True)
     model = keras.models.load_model("./models/saved/lstm-small.h5")
-
+    print(model)
+    print(label_encoder)
+    print(tokenizer)
 
 load_resources()
 print("All resources loaded...")
@@ -50,6 +52,8 @@ def index():
     :return: Returns a response containing the predictions from the model based on the raw input text that was sent
     with the request.
     """
+    print("Received request...")
+
     start_time = time.time()
     print(f"Start: {time.time() - start_time}")
 
