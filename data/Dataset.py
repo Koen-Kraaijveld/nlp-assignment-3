@@ -34,7 +34,7 @@ class Dataset:
             "make_lowercase",
             "expand_contractions",
             "clean_text",
-            "remove_stopwords",
+            # "remove_stopwords",
             # "lemmatize",
             "remove_duplicates"
         ])

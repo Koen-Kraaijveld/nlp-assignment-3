@@ -24,9 +24,9 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
 # Set the seed for reproducibility
-tensorflow.keras.utils.set_random_seed(42)
-random.seed(42)
-np.random.seed(42)
+# tensorflow.keras.utils.set_random_seed(42)
+# random.seed(42)
+# np.random.seed(42)
 
 
 class LSTM:
@@ -69,16 +69,16 @@ class LSTM:
         model = Sequential()
         model.add(Embedding(vocab_size, self.__embedding.dimensionality, weights=[embedding_matrix],
                             input_length=self.__embedding.dimensionality, trainable=False))
-        model.add(Bidirectional(LSTMLayer(256, return_sequences=True)))
+        model.add(Bidirectional(LSTMLayer(1024, return_sequences=True)))
         model.add(GlobalMaxPooling1D())
-        model.add(Dense(256))
+        model.add(Dense(512))
         model.add(BatchNormalization())
         model.add(LeakyReLU())
         model.add(Dropout(0.7))
-        model.add(Dense(256))
+        model.add(Dense(512))
         model.add(BatchNormalization())
         model.add(LeakyReLU())
-        model.add(Dense(256))
+        model.add(Dense(512))
         model.add(BatchNormalization())
         model.add(LeakyReLU())
         model.add(Dropout(0.7))
