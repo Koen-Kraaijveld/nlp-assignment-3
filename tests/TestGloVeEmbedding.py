@@ -151,21 +151,8 @@ class TestGloVeEmbedding840B300d(unittest.TestCase):
     def test_temp(self):
         words = load_categories("../data/saved/categories_289.txt")
         embedding_word_vectors = {word: self.embeddings.embedding_index[word] for word in words}
-        subset = find_maximal_subset(embedding_word_vectors)
+        subset = find_maximal_subset(embedding_word_vectors, k=25)
         min_distance = self.embeddings.calculate_min_distance_between_words(subset)
         print(subset)
         print(min_distance)
-        self.embeddings.visualize_words(words, special_words=subset)
-        # ('airplane', 'laptop', 8.579513549804688)
-
-        subset_2 = ['airplane', 'broccoli', 'dumbbell', 'stitches', 'dishwasher', 'stethoscope', 'van', 'blueberry',
-                    'cello', 'goatee', 'basketball', 'necklace', 'church', 'telephone', 'streetlight', 'anvil',
-                    'spreadsheet', 'stereo', 'binoculars', 'rhinoceros', 'beach', 'brain', 'campfire', 'tornado',
-                    'laptop']
-        min_distance_2 = self.embeddings.calculate_min_distance_between_words(subset_2)
-        print(min_distance_2)
-
-# ['ear', 'knee', 'hurricane', 'bench', 'clarinet', 'hedgehog', 'blackberry', 'sailboat', 'campfire', 'eyeglasses', 'camel', 'guitar', 'basketball', 'toothbrush', 'trombone', 'streetlight', 'onion', 'van', 'hexagon', 'bowtie', 'dumbbell', 'squiggle', 'grapes', 'television', 'cake']
-# ['brain', 'oven', 'mushroom', 'dumbbell', 'diamond', 'spreadsheet', 'elephant', 'toe', 'sheep', 'keyboard', 'dresser', 'toothpaste', 'snorkel', 'dishwasher', 'pants', 'trombone', 'mountain', 'pliers', 'streetlight', 'crab', 'clarinet', 'sun', 'van', 'square', 'telephone']
-# ['ear', 'knee', 'hurricane', 'bench', 'clarinet', 'hedgehog', 'blackberry', 'sailboat', 'campfire', 'eyeglasses', 'camel', 'guitar', 'basketball', 'toothbrush', 'trombone', 'streetlight', 'onion', 'van', 'hexagon', 'bowtie', 'dumbbell', 'squiggle', 'grapes', 'television', 'cake']
-# ['dumbbell', 'trombone', 'shoe', 'nail', 'speedboat', 'mountain', 'strawberry', 'calculator', 'eraser', 'grapes', 'motorbike', 'rhinoceros', 'lobster', 'streetlight', 'whale', 'door', 'church', 'basketball', 'drums', 'helicopter', 'squiggle', 'firetruck', 'banana', 'tooth', 'pliers']
+        # self.embeddings.visualize_words(words, special_words=subset)

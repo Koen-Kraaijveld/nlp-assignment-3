@@ -5,6 +5,7 @@ import random
 
 import numpy as np
 import scipy
+import pickle
 import tensorflow
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -69,19 +70,11 @@ class LSTM:
         model = Sequential()
         model.add(Embedding(vocab_size, self.__embedding.dimensionality, weights=[embedding_matrix],
                             input_length=self.__embedding.dimensionality, trainable=False))
-        model.add(Bidirectional(LSTMLayer(1024, return_sequences=True)))
+        model.add(Bidirectional(LSTMLayer(64, return_sequences=True)))
         model.add(GlobalMaxPooling1D())
-        model.add(Dense(512))
-        model.add(BatchNormalization())
-        model.add(LeakyReLU())
-        model.add(Dropout(0.7))
-        model.add(Dense(512))
-        model.add(BatchNormalization())
-        model.add(LeakyReLU())
-        model.add(Dense(512))
-        model.add(BatchNormalization())
-        model.add(LeakyReLU())
-        model.add(Dropout(0.7))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(64, activation="relu"))
         model.add(Dense(25, activation='softmax'))
         optimizer = Adam(learning_rate=0.001)
         model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=["acc"])
@@ -89,10 +82,11 @@ class LSTM:
 
         scheduler = tensorflow.keras.optimizers.schedules.CosineDecay(initial_learning_rate=0.001, decay_steps=50)
         scheduler = tensorflow.keras.callbacks.LearningRateScheduler(scheduler)
-        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=15)
+        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
         model.fit(np.array(train_seq), np.array(self.__train["label"]), batch_size=64,
-                  validation_split=0.2, epochs=1000, verbose=1, callbacks=[es, scheduler])
+                  validation_split=0.2, epochs=5, verbose=1, callbacks=[])
         model.save("./models/saved/lstm.h5", save_format="h5")
+        pickle.dump(model, open("./models/saved/lstm_pickle.pkl", "wb"))
         self.__model = model
 
     def predict(self, text):

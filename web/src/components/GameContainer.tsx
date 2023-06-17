@@ -4,7 +4,7 @@ import { ImSpinner2 } from "react-icons/im"
 import { AiOutlineEnter } from "react-icons/ai"
 
 import ProbabilitiesTracker from './ProbabilitiesTracker';
-import categories from "../data/categories_100.json";
+import categories from "../data/categories_25.json";
 
 interface IProps {
 }
@@ -59,7 +59,6 @@ class GameContainer extends React.Component<IProps, IState> {
      * Function that is called when the component sucessfully mounts.
      */
     componentDidMount(): void {
-        alert("Please note that the first request sent might take upwards of 2 minutes. Due to limited resources, the AI model used in this app is hosted on a free web service. Therefore, the API might take some time to respond. Apologies for the inconvenience.")
         this.setState({
             currentCategory: this.state.possibleCategories[Math.floor(Math.random() * this.state.possibleCategories.length)]
         })
@@ -98,7 +97,7 @@ class GameContainer extends React.Component<IProps, IState> {
      */
     predict(description: string) {
         this.setState({isRequesting: true})
-        fetch("https://nlp-assignment-3.onrender.com/predict", {
+        fetch("https://koen-kraaijveld.onrender.com/descraibeit", {
           method: "POST",
           body: JSON.stringify({"text": description}),
           headers: {
